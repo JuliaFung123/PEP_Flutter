@@ -16,7 +16,7 @@ class BuyQuantityComponentPage extends StatefulWidget {
     id: 'buy_quantity',
     title: 'Buy quantity',
     m3SpecUrl:
-        'https://www.figma.com/design/61SERD0hYvuj7BrwBRv210/PEP_APP-2?node-id=248-5760',
+        'https://www.figma.com/design/61SERD0hYvuj7BrwBRv210/PEP_APP-2?node-id=247-5852',
     description:
         'Bottom purchase layout: quantity stepper with backend `maxQuantity`, '
         'optional red hint composed from backend remaining / waitlist / '

@@ -50,7 +50,7 @@ class BuyQuantityAvailability {
 
 /// Bottom purchase bar: quantity stepper, price summary, and buy action.
 ///
-/// Figma: https://www.figma.com/design/61SERD0hYvuj7BrwBRv210/PEP_APP-2?node-id=248-5760
+/// Figma: https://www.figma.com/design/61SERD0hYvuj7BrwBRv210/PEP_APP-2?node-id=247-5852
 class BuyQuantity extends StatelessWidget {
   const BuyQuantity({
     super.key,
@@ -147,15 +147,15 @@ class BuyQuantity extends StatelessWidget {
               ),
             ),
             if (prices.isNotEmpty) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               Divider(height: 1, color: colorScheme.outlineVariant),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: _PriceSummaryRow(prices: prices),
               ),
             ],
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: SizedBox(
