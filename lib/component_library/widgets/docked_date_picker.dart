@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'kpi_button_styles.dart';
 import 'kpi_text_field.dart';
 import 'm3_date_picker.dart';
 
@@ -41,6 +42,10 @@ Future<DateTime?> showDockedDatePicker(
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(sheetContext).pop(),
+                        style: KpiButtonStyles.labelStyle(
+                          sheetContext,
+                          KpiButtonSize.s40,
+                        ),
                         child: const Text('Cancel'),
                       ),
                     ),
@@ -48,6 +53,10 @@ Future<DateTime?> showDockedDatePicker(
                     Expanded(
                       child: FilledButton(
                         onPressed: () => Navigator.of(sheetContext).pop(date),
+                        style: KpiButtonStyles.labelStyle(
+                          sheetContext,
+                          KpiButtonSize.s40,
+                        ),
                         child: const Text('Done'),
                       ),
                     ),
@@ -177,6 +186,7 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
       prefixIcon: const Icon(Icons.calendar_today_outlined),
       suffixIcon: IconButton(
         icon: const Icon(Icons.calendar_month_outlined),
+        style: KpiButtonStyles.iconStyle(KpiButtonSize.s40),
         onPressed: widget.enabled ? () => _open(context) : null,
       ),
       keyboardType: TextInputType.datetime,

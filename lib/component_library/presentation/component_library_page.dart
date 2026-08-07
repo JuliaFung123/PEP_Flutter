@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../features/activity/presentation/activity_page.dart';
 import '../models/component_library_group.dart';
 import '../models/component_page_meta.dart';
 import '../registry/component_registry.dart';
@@ -14,19 +15,44 @@ class ComponentLibraryPage extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Component library')),
+      appBar: AppBar(
+        title: Text('Component library', style: textTheme.titleLarge),
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount: _itemCount(sections),
+        itemCount: _itemCount(sections) + 1,
         itemBuilder: (context, index) {
-          final item = _resolveItem(sections, index);
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Card(
+                child: ListTile(
+                  leading: const Icon(Icons.local_activity_outlined),
+                  title: Text('活動', style: textTheme.titleMedium),
+                  subtitle: Text(
+                    'Open the activity detail page',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ActivityPage(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+          }
+
+          final item = _resolveItem(sections, index - 1);
 
           return switch (item) {
             _SectionHeader(:final title, :final isFirst) => Padding(
-              padding: EdgeInsets.only(
-                top: isFirst ? 0 : 20,
-                bottom: 8,
-              ),
+              padding: EdgeInsets.only(top: isFirst ? 0 : 20, bottom: 8),
               child: Text(
                 title,
                 style: textTheme.labelLarge?.copyWith(
@@ -47,17 +73,12 @@ class ComponentLibraryPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  title: Text(
-                    page.title,
-                    style: textTheme.titleMedium,
-                  ),
+                  title: Text(page.title, style: textTheme.titleMedium),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: page.pageBuilder,
-                      ),
-                    );
+                    Navigator.of(
+                      context,
+                    ).push(MaterialPageRoute<void>(builder: page.pageBuilder));
                   },
                 ),
               ),
@@ -84,10 +105,7 @@ class ComponentLibraryPage extends StatelessWidget {
     for (var sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
       final section = sections[sectionIndex];
       if (cursor == index) {
-        return _SectionHeader(
-          title: section.title,
-          isFirst: sectionIndex == 0,
-        );
+        return _SectionHeader(title: section.title, isFirst: sectionIndex == 0);
       }
       cursor++;
 
@@ -110,20 +128,14 @@ sealed class _LibraryListItem {
 }
 
 final class _SectionHeader extends _LibraryListItem {
-  const _SectionHeader({
-    required this.title,
-    required this.isFirst,
-  });
+  const _SectionHeader({required this.title, required this.isFirst});
 
   final String title;
   final bool isFirst;
 }
 
 final class _SectionEntry extends _LibraryListItem {
-  const _SectionEntry({
-    required this.page,
-    required this.number,
-  });
+  const _SectionEntry({required this.page, required this.number});
 
   final ComponentPageMeta page;
   final int number;

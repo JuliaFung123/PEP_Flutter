@@ -1,119 +1,112 @@
 import 'package:flutter/material.dart';
 
-/// KPI button sizes and toggle-state color overrides for the component library.
+/// Button sizes from Figma Flutter UI kit.
 ///
-/// **Default colors** come from [ThemeData] — M3 tokens live on [ColorScheme]
-/// (`outlineVariant`, `onSurfaceVariant`, `primary`, etc.) and are wired in
-/// [AppTheme] via each `*ButtonTheme`. Do not duplicate hex values here.
-///
-/// Toggle unselected / selected colors are preview-only overrides (not in
-/// standard Flutter button themes) for the Buttons reference matrix.
-enum KpiButtonVariant { elevated, filled, filledTonal, outlined, text }
+/// https://www.figma.com/design/YeqrkvpScSQDy7H6cFRIgZ/Flutter-UI-Material-3?node-id=2061-548
+enum KpiButtonSize {
+  /// Figma `Size=XS 32` — height 32, pad 12, label inner 4, Label Large.
+  xs32,
 
-enum KpiButtonColorState { defaultState, toggleUnselected, toggleSelected }
+  /// Figma `Size=S 40` — height 40, pad 16, label inner 8, Label Large.
+  s40,
 
-abstract final class KpiButtonStyles {
-  /// Size, padding, and capsule shape — colors inherit from theme.
-  static ButtonStyle sizeStyle({
-    required double height,
-    required double horizontalPadding,
-    required double iconSize,
-  }) {
-    return ButtonStyle(
-      minimumSize: WidgetStatePropertyAll(Size(0, height)),
-      padding: WidgetStatePropertyAll(
-        EdgeInsets.symmetric(horizontal: horizontalPadding),
-      ),
-      iconSize: WidgetStatePropertyAll(iconSize),
-      shape: const WidgetStatePropertyAll(StadiumBorder()),
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    );
-  }
+  /// Figma `Size=M 56` — height 56, pad 24, label inner 16, Title Large.
+  m56,
+}
 
-  /// Toggle-state color overrides using M3 [ColorScheme] roles from the theme.
-  static ButtonStyle? toggleColorStyle({
-    required ColorScheme scheme,
-    required KpiButtonVariant variant,
-    required KpiButtonColorState colorState,
-  }) {
-    if (colorState == KpiButtonColorState.defaultState) return null;
+enum KpiButtonMode { filled, outlined, tonal, text }
 
-    return switch (variant) {
-      KpiButtonVariant.elevated => _elevatedToggle(scheme, colorState),
-      KpiButtonVariant.filled => _filledToggle(scheme, colorState),
-      KpiButtonVariant.filledTonal => _tonalToggle(scheme, colorState),
-      KpiButtonVariant.outlined => _outlinedToggle(scheme, colorState),
-      KpiButtonVariant.text => null,
+extension KpiButtonSizeX on KpiButtonSize {
+  String get label => switch (this) {
+    KpiButtonSize.xs32 => 'XS 32',
+    KpiButtonSize.s40 => 'S 40',
+    KpiButtonSize.m56 => 'M 56',
+  };
+
+  double get height => switch (this) {
+    KpiButtonSize.xs32 => 32,
+    KpiButtonSize.s40 => 40,
+    KpiButtonSize.m56 => 56,
+  };
+
+  /// Outer horizontal padding (Figma button `px`).
+  double get horizontalPadding => switch (this) {
+    KpiButtonSize.xs32 => 12,
+    KpiButtonSize.s40 => 16,
+    KpiButtonSize.m56 => 24,
+  };
+
+  /// Leading glyph size from Figma.
+  double get leadingIconSize => switch (this) {
+    KpiButtonSize.xs32 => 20,
+    KpiButtonSize.s40 => 20,
+    KpiButtonSize.m56 => 24,
+  };
+
+  /// Trailing glyph size from Figma (dropdown is slightly smaller on XS/S).
+  double get trailingIconSize => switch (this) {
+    KpiButtonSize.xs32 => 18,
+    KpiButtonSize.s40 => 18,
+    KpiButtonSize.m56 => 20,
+  };
+
+  /// Alias for icon-only buttons (matches leading).
+  double get iconSize => leadingIconSize;
+
+  /// Gap between icon and label (Figma Button Label horizontal pad).
+  double get iconLabelGap => switch (this) {
+    KpiButtonSize.xs32 => 4,
+    KpiButtonSize.s40 => 8,
+    KpiButtonSize.m56 => 16,
+  };
+
+  /// XS/S → Label Large; M → Title Large.
+  TextStyle? textStyleOf(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+    return switch (this) {
+      KpiButtonSize.xs32 || KpiButtonSize.s40 => theme.labelLarge,
+      KpiButtonSize.m56 => theme.titleLarge,
     };
   }
 
-  static ButtonStyle style({
-    required ColorScheme scheme,
-    required KpiButtonVariant variant,
-    required KpiButtonColorState colorState,
-    required double height,
-    required double horizontalPadding,
-    required double iconSize,
-  }) {
-    final size = sizeStyle(
-      height: height,
-      horizontalPadding: horizontalPadding,
-      iconSize: iconSize,
-    );
-    final toggle = toggleColorStyle(
-      scheme: scheme,
-      variant: variant,
-      colorState: colorState,
-    );
-    return toggle == null ? size : size.merge(toggle);
-  }
+  String get typographyToken => switch (this) {
+    KpiButtonSize.xs32 || KpiButtonSize.s40 => 'Label Large',
+    KpiButtonSize.m56 => 'Title Large',
+  };
+}
 
-  static ButtonStyle _elevatedToggle(
-    ColorScheme scheme,
-    KpiButtonColorState state,
-  ) {
-    if (state == KpiButtonColorState.toggleUnselected) return const ButtonStyle();
-
+/// Shared styles for label + icon buttons (stadium / circle, Figma sizes).
+abstract final class KpiButtonStyles {
+  /// Label button — exact Figma height. Do not use [VisualDensity.compact]
+  /// (it subtracts 8px from min height and breaks XS/S/M).
+  static ButtonStyle labelStyle(BuildContext context, KpiButtonSize size) {
+    final h = size.height;
     return ButtonStyle(
-      backgroundColor: WidgetStatePropertyAll(scheme.primary),
-      foregroundColor: WidgetStatePropertyAll(scheme.onPrimary),
-      elevation: const WidgetStatePropertyAll(0),
+      minimumSize: WidgetStatePropertyAll(Size(0, h)),
+      maximumSize: WidgetStatePropertyAll(Size(double.infinity, h)),
+      padding: WidgetStatePropertyAll(
+        EdgeInsets.symmetric(horizontal: size.horizontalPadding),
+      ),
+      textStyle: WidgetStatePropertyAll(size.textStyleOf(context)),
+      iconSize: WidgetStatePropertyAll(size.leadingIconSize),
+      shape: const WidgetStatePropertyAll(StadiumBorder()),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: VisualDensity.standard,
     );
   }
 
-  static ButtonStyle _filledToggle(
-    ColorScheme scheme,
-    KpiButtonColorState state,
-  ) {
-    if (state == KpiButtonColorState.toggleSelected) return const ButtonStyle();
-
+  /// Circular icon button matching Figma Icon Button size.
+  static ButtonStyle iconStyle(KpiButtonSize size) {
+    final dim = size.height;
     return ButtonStyle(
-      backgroundColor: WidgetStatePropertyAll(scheme.surfaceContainer),
-      foregroundColor: WidgetStatePropertyAll(scheme.onSurfaceVariant),
-    );
-  }
-
-  static ButtonStyle _tonalToggle(
-    ColorScheme scheme,
-    KpiButtonColorState state,
-  ) {
-    if (state == KpiButtonColorState.toggleUnselected) return const ButtonStyle();
-
-    return ButtonStyle(
-      foregroundColor: WidgetStatePropertyAll(scheme.onSecondary),
-    );
-  }
-
-  static ButtonStyle _outlinedToggle(
-    ColorScheme scheme,
-    KpiButtonColorState state,
-  ) {
-    if (state == KpiButtonColorState.toggleUnselected) return const ButtonStyle();
-
-    return ButtonStyle(
-      backgroundColor: WidgetStatePropertyAll(scheme.inverseSurface),
-      foregroundColor: WidgetStatePropertyAll(scheme.onInverseSurface),
-      side: const WidgetStatePropertyAll(BorderSide.none),
+      minimumSize: WidgetStatePropertyAll(Size(dim, dim)),
+      maximumSize: WidgetStatePropertyAll(Size(dim, dim)),
+      fixedSize: WidgetStatePropertyAll(Size(dim, dim)),
+      padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+      iconSize: WidgetStatePropertyAll(size.iconSize),
+      shape: const WidgetStatePropertyAll(CircleBorder()),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: VisualDensity.standard,
     );
   }
 }

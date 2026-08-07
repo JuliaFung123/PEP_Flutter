@@ -5,6 +5,7 @@ import '../models/component_note.dart';
 import '../models/pending_variant.dart';
 import 'component_note_table.dart';
 import 'component_section.dart';
+import 'kpi_button_styles.dart';
 import 'pending_variants_table.dart';
 
 /// Shell for all component reference pages (Parts 1–3).
@@ -34,8 +35,12 @@ class ComponentPageScaffold extends StatelessWidget {
         actions: [
           TextButton.icon(
             onPressed: () => _openSpec(m3SpecUrl),
-            icon: const Icon(Icons.open_in_new, size: 18),
-            label: Text('M3 spec', style: Theme.of(context).textTheme.labelLarge),
+            style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+            icon: Icon(Icons.open_in_new, size: KpiButtonSize.s40.iconSize),
+            label: Text(
+              'M3 spec',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
           ),
         ],
       ),

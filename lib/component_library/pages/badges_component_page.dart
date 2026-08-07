@@ -28,7 +28,9 @@ class BadgesComponentPage extends StatelessWidget {
     ComponentNote(
       variant: 'Large badge',
       m3Behavior: 'Large badge with label text for counts.',
-      ourImplementation: 'Badge with label property.',
+      ourImplementation:
+          '`Badge` with label; labelSmall height 1 + even leading so the '
+          'count sits vertically centered (Noto can look optically low).',
       action: 'Use as-is',
     ),
   ];
@@ -82,7 +84,19 @@ class BadgesComponentPage extends StatelessWidget {
         child: child,
       ),
       'large' => Badge(
-        label: Text(cell.isEnabled ? '3' : '0'),
+        textStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
+          height: 1,
+          leadingDistribution: TextLeadingDistribution.even,
+        ),
+        label: Text(
+          cell.isEnabled ? '3' : '0',
+          textAlign: TextAlign.center,
+          textHeightBehavior: const TextHeightBehavior(
+            applyHeightToFirstAscent: false,
+            applyHeightToLastDescent: false,
+            leadingDistribution: TextLeadingDistribution.even,
+          ),
+        ),
         child: child,
       ),
       _ => const SizedBox.shrink(),

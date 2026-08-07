@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../models/component_note.dart';
 import '../models/component_page_meta_data.dart';
+import '../models/pending_variant.dart';
 import '../widgets/component_page_scaffold.dart';
 import '../widgets/kpi_button_styles.dart';
 import '../widgets/variant_matrix_table.dart';
 
-/// M3 Buttons — https://m3.material.io/components/buttons/specs
+/// Buttons from Figma Flutter UI kit (3 sizes × modes × label/icon).
+///
+/// https://www.figma.com/design/YeqrkvpScSQDy7H6cFRIgZ/Flutter-UI-Material-3?node-id=2061-548
 class ButtonsComponentPage extends StatefulWidget {
   const ButtonsComponentPage({super.key});
 
   static const meta = ComponentPageMetaData(
     id: 'buttons',
     title: 'Buttons',
-    m3SpecUrl: 'https://m3.material.io/components/buttons/specs',
+    m3SpecUrl:
+        'https://www.figma.com/design/YeqrkvpScSQDy7H6cFRIgZ/Flutter-UI-Material-3?node-id=2061-548',
     description:
-        'Help people take actions. Default colors use M3 tokens from the app theme '
-        '(ColorScheme + button themes). Toggle states are preview overrides only.',
+        'Standard M3 buttons (Filled / Outlined / Tonal / Text + IconButton) '
+        'with a small size scale from the Flutter UI kit: XS 32, S 40, M 56. '
+        'Use Flutter Material widgets; apply `KpiButtonStyles` only when you '
+        'need a non-default size.',
   );
 
   @override
@@ -24,159 +30,44 @@ class ButtonsComponentPage extends StatefulWidget {
 }
 
 class _ButtonsComponentPageState extends State<ButtonsComponentPage> {
-  bool _showIcon = false;
-  KpiButtonColorState _colorState = KpiButtonColorState.defaultState;
+  bool _showLeadingIcon = false;
+  bool _showTrailingIcon = false;
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Theme tokens',
+      variant: 'M3 buttons',
       m3Behavior:
-          'Button colors are M3 ColorScheme roles (e.g. outlineVariant, onSurfaceVariant).',
+          'Filled, Outlined, Tonal, Text, IconButton — ColorScheme, states, '
+          'icons, and shapes are Material 3.',
       ourImplementation:
-          'AppTheme wires *ButtonTheme from colorScheme — Figma hex values resolve from seed.',
-      action: 'Use theme',
-    ),
-    ComponentNote(
-      variant: 'Elevated',
-      m3Behavior: 'Adds emphasis with shadow; lower emphasis than filled.',
-      ourImplementation: 'ElevatedButtonTheme — surfaceContainerLow + primary.',
-      action: 'Use theme',
-    ),
-    ComponentNote(
-      variant: 'Filled',
-      m3Behavior: 'Highest emphasis for primary actions.',
-      ourImplementation: 'FilledButtonTheme — primary + onPrimary.',
-      action: 'Use theme',
-    ),
-    ComponentNote(
-      variant: 'Filled tonal',
-      m3Behavior: 'Medium emphasis with tonal container color.',
-      ourImplementation:
-          'FilledButton.tonal — secondaryContainer + onSecondaryContainer from theme.',
-      action: 'Use theme',
-    ),
-    ComponentNote(
-      variant: 'Outlined',
-      m3Behavior: 'Medium emphasis with outline border.',
-      ourImplementation:
-          'OutlinedButtonTheme — outlineVariant border, onSurfaceVariant label/icon.',
-      action: 'Use theme',
-    ),
-    ComponentNote(
-      variant: 'Text',
-      m3Behavior: 'Lowest emphasis for optional actions.',
-      ourImplementation: 'TextButtonTheme — primary label.',
-      action: 'Use theme',
-    ),
-    ComponentNote(
-      variant: 'Toggle states',
-      m3Behavior: 'Toggle unselected/selected swap container and label tokens.',
-      ourImplementation:
-          'Preview-only overrides in KpiButtonStyles — not in standard button themes.',
-      action: 'Use for toggle demos',
-    ),
-    ComponentNote(
-      variant: 'Icon',
-      m3Behavior: 'Compact icon-only action.',
-      ourImplementation: 'IconButton.',
+          'Same Flutter Material widgets. Theme default height is S 40. '
+          'This page is a size reference, not a custom button component.',
       action: 'Use as-is',
     ),
     ComponentNote(
-      variant: 'FAB',
-      m3Behavior: 'Prominent action floating above content.',
-      ourImplementation: 'FloatingActionButton.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Extended FAB',
-      m3Behavior: 'FAB with text label.',
-      ourImplementation: 'FloatingActionButton.extended.',
+      variant: 'Size tokens (only delta)',
+      m3Behavior: 'Stock Flutter buttons are typically ~40 tall / Label Large.',
+      ourImplementation:
+          'Kit sizes via `KpiButtonStyles`: XS 32 (pad 12), S 40 (pad 16), '
+          'M 56 (pad 24, `titleLarge`). Use `VisualDensity.standard` so '
+          'heights stay exact (compact shrinks by 8px).',
       action: 'Use as-is',
     ),
   ];
 
-  static const _sizes = <_ButtonSizeSpec>[
-    _ButtonSizeSpec(
-      label: 'X Small',
-      height: 32,
-      horizontalPadding: 12,
-      iconSize: 20,
-      iconGap: 4,
-    ),
-    _ButtonSizeSpec(
-      label: 'Small',
-      height: 40,
-      horizontalPadding: 16,
-      iconSize: 20,
-      iconGap: 8,
-    ),
-    _ButtonSizeSpec(
-      label: 'Medium',
-      height: 56,
-      horizontalPadding: 24,
-      iconSize: 24,
-      iconGap: 8,
-    ),
-    _ButtonSizeSpec(
-      label: 'Large',
-      height: 96,
-      horizontalPadding: 48,
-      iconSize: 32,
-      iconGap: 12,
-    ),
-    _ButtonSizeSpec(
-      label: 'X Large',
-      height: 136,
-      horizontalPadding: 64,
-      iconSize: 40,
-      iconGap: 16,
-    ),
+  static const _pending = <PendingVariant>[];
+
+  static const _modes = <_ModeSpec>[
+    _ModeSpec(KpiButtonMode.filled, 'Filled'),
+    _ModeSpec(KpiButtonMode.outlined, 'Outlined'),
+    _ModeSpec(KpiButtonMode.tonal, 'Tonal'),
+    _ModeSpec(KpiButtonMode.text, 'Text'),
   ];
 
-  static const _rows = <_ButtonVariantRow>[
-    _ButtonVariantRow(id: 'elevated', label: 'Elevated'),
-    _ButtonVariantRow(id: 'elevated_disabled', label: 'Elevated (disabled)'),
-    _ButtonVariantRow(id: 'filled', label: 'Filled'),
-    _ButtonVariantRow(id: 'filled_disabled', label: 'Filled (disabled)'),
-    _ButtonVariantRow(id: 'filled_tonal', label: 'Filled tonal'),
-    _ButtonVariantRow(
-      id: 'filled_tonal_disabled',
-      label: 'Filled tonal (disabled)',
-    ),
-    _ButtonVariantRow(id: 'outlined', label: 'Outlined'),
-    _ButtonVariantRow(id: 'outlined_disabled', label: 'Outlined (disabled)'),
-    _ButtonVariantRow(id: 'text', label: 'Text'),
-    _ButtonVariantRow(id: 'text_disabled', label: 'Text (disabled)'),
-    _ButtonVariantRow(
-      id: 'icon',
-      label: 'Icon',
-      supportsIcons: false,
-    ),
-    _ButtonVariantRow(
-      id: 'icon_disabled',
-      label: 'Icon (disabled)',
-      supportsIcons: false,
-    ),
-    _ButtonVariantRow(
-      id: 'fab',
-      label: 'FAB',
-      supportsIcons: false,
-    ),
-    _ButtonVariantRow(
-      id: 'fab_disabled',
-      label: 'FAB (disabled)',
-      supportsIcons: false,
-    ),
-    _ButtonVariantRow(
-      id: 'extended_fab',
-      label: 'Extended FAB',
-      supportsIcons: false,
-    ),
-    _ButtonVariantRow(
-      id: 'extended_fab_disabled',
-      label: 'Extended FAB (disabled)',
-      supportsIcons: false,
-    ),
+  static const _sizes = [
+    KpiButtonSize.xs32,
+    KpiButtonSize.s40,
+    KpiButtonSize.m56,
   ];
 
   @override
@@ -186,263 +77,282 @@ class _ButtonsComponentPageState extends State<ButtonsComponentPage> {
       m3SpecUrl: ButtonsComponentPage.meta.m3SpecUrl,
       description: ButtonsComponentPage.meta.description,
       notes: _notes,
-      pendingVariants: const [],
+      pendingVariants: _pending,
       variantsSection: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          VariantIconControls(
-            showLeadingIcon: _showIcon,
-            showTrailingIcon: false,
-            leadingLabel: 'Icon',
-            showTrailingToggle: false,
-            onLeadingChanged: (v) => setState(() => _showIcon = v),
-            onTrailingChanged: (_) {},
-          ),
-          const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SegmentedButton<KpiButtonColorState>(
-              segments: const [
-                ButtonSegment(
-                  value: KpiButtonColorState.defaultState,
-                  label: Text('Default'),
-                ),
-                ButtonSegment(
-                  value: KpiButtonColorState.toggleUnselected,
-                  label: Text('Toggle unselected'),
-                ),
-                ButtonSegment(
-                  value: KpiButtonColorState.toggleSelected,
-                  label: Text('Toggle selected'),
-                ),
-              ],
-              selected: {_colorState},
-              onSelectionChanged: (selection) {
-                setState(() => _colorState = selection.first);
-              },
+          Text('Label button', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            'Stadium · XS/S Label Large · M Title Large · Enabled over Disabled',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 12),
-          _buildVariantTable(context),
+          VariantIconControls(
+            showLeadingIcon: _showLeadingIcon,
+            showTrailingIcon: _showTrailingIcon,
+            onLeadingChanged: (value) =>
+                setState(() => _showLeadingIcon = value),
+            onTrailingChanged: (value) =>
+                setState(() => _showTrailingIcon = value),
+          ),
+          const SizedBox(height: 12),
+          for (final mode in _modes) ...[
+            _ModeRow(
+              title: mode.label,
+              children: [
+                for (final size in _sizes)
+                  _SizeColumn(
+                    sizeLabel: '${size.label} · ${size.typographyToken}',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _LabelButtonPreview(
+                          mode: mode.mode,
+                          size: size,
+                          enabled: true,
+                          showLeadingIcon: _showLeadingIcon,
+                          showTrailingIcon: _showTrailingIcon,
+                        ),
+                        const SizedBox(height: 8),
+                        _LabelButtonPreview(
+                          mode: mode.mode,
+                          size: size,
+                          enabled: false,
+                          showLeadingIcon: _showLeadingIcon,
+                          showTrailingIcon: _showTrailingIcon,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
+          const SizedBox(height: 8),
+          Text('Icon button', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 4),
+          Text(
+            'Circle · glyph 20 / 20 / 24 · Enabled over Disabled',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 12),
+          for (final mode in _modes) ...[
+            _ModeRow(
+              title: mode.label,
+              children: [
+                for (final size in _sizes)
+                  _SizeColumn(
+                    sizeLabel: size.label,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _IconButtonPreview(
+                          mode: mode.mode,
+                          size: size,
+                          enabled: true,
+                        ),
+                        const SizedBox(height: 8),
+                        _IconButtonPreview(
+                          mode: mode.mode,
+                          size: size,
+                          enabled: false,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
         ],
       ),
     );
   }
+}
 
-  Widget _buildVariantTable(BuildContext context) {
-    final borderColor = Theme.of(context).colorScheme.outlineVariant;
-    final labelStyle = Theme.of(context).textTheme.labelLarge;
-    final bodyStyle = Theme.of(context).textTheme.bodyMedium;
+class _ModeSpec {
+  const _ModeSpec(this.mode, this.label);
+  final KpiButtonMode mode;
+  final String label;
+}
 
-    return LayoutBuilder(
-        builder: (context, constraints) {
-          final minWidth = constraints.maxWidth.isFinite
-              ? constraints.maxWidth.clamp(1180.0, double.infinity).toDouble()
-              : 1180.0;
+class _ModeRow extends StatelessWidget {
+  const _ModeRow({required this.title, required this.children});
 
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: minWidth),
-              child: Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(1.8),
-                  1: FlexColumnWidth(),
-                  2: FlexColumnWidth(),
-                  3: FlexColumnWidth(),
-                  4: FlexColumnWidth(),
-                  5: FlexColumnWidth(),
-                },
-                border: TableBorder.all(color: borderColor),
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  TableRow(
-                    children: [
-                      _tableCell(
-                        child: Text('Variant', style: labelStyle),
-                        alignment: Alignment.centerLeft,
-                      ),
-                      for (final size in _sizes)
-                        _tableCell(
-                          child: Text(
-                            size.label,
-                            style: labelStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                    ],
-                  ),
-                  for (final row in _rows)
-                    TableRow(
-                      children: [
-                        _tableCell(
-                          child: Text(row.label, style: bodyStyle),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        for (final size in _sizes)
-                          _tableCell(
-                            child: _buildCell(
-                              context: context,
-                              row: row,
-                              size: size,
-                            ),
-                          ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-          );
-        },
-    );
-  }
+  final String title;
+  final List<Widget> children;
 
-  Widget _tableCell({
-    required Widget child,
-    Alignment alignment = Alignment.center,
-  }) {
-    return TableCell(
-      child: Container(
-        width: double.infinity,
-        alignment: alignment,
-        padding: const EdgeInsets.all(12),
-        child: child,
-      ),
-    );
-  }
-
-  Widget _buildCell({
-    required BuildContext context,
-    required _ButtonVariantRow row,
-    required _ButtonSizeSpec size,
-  }) {
+  @override
+  Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final enabled = !row.id.endsWith('_disabled');
-    final onPressed = enabled ? () {} : null;
-    final showIcon = _showIcon && row.supportsIcons;
-    final baseId = row.id.replaceFirst('_disabled', '');
-
-    ButtonStyle labelStyle(KpiButtonVariant v) => KpiButtonStyles.style(
-          scheme: scheme,
-          variant: v,
-          colorState: _colorState,
-          height: size.height,
-          horizontalPadding: size.horizontalPadding,
-          iconSize: size.iconSize,
-        );
-
-    Widget labelButton({
-      required Widget Function({
-        required VoidCallback? onPressed,
-        required Widget child,
-        ButtonStyle? style,
-      })
-      builder,
-      required KpiButtonVariant buttonVariant,
-    }) {
-      const label = Text('Label');
-      final style = labelStyle(buttonVariant);
-      if (showIcon) {
-        return builder(
-          onPressed: onPressed,
-          style: style,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: scheme.outlineVariant),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.add, size: size.iconSize),
-              SizedBox(width: size.iconGap),
-              label,
+              for (var i = 0; i < children.length; i++) ...[
+                if (i > 0) const SizedBox(width: 16),
+                Expanded(child: children[i]),
+              ],
             ],
           ),
-        );
-      }
-      return builder(onPressed: onPressed, child: label, style: style);
+        ],
+      ),
+    );
+  }
+}
+
+class _SizeColumn extends StatelessWidget {
+  const _SizeColumn({required this.sizeLabel, required this.child});
+
+  final String sizeLabel;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          sizeLabel,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 8),
+        child,
+      ],
+    );
+  }
+}
+
+class _LabelButtonPreview extends StatelessWidget {
+  const _LabelButtonPreview({
+    required this.mode,
+    required this.size,
+    required this.enabled,
+    required this.showLeadingIcon,
+    required this.showTrailingIcon,
+  });
+
+  final KpiButtonMode mode;
+  final KpiButtonSize size;
+  final bool enabled;
+  final bool showLeadingIcon;
+  final bool showTrailingIcon;
+
+  Widget _child() {
+    final gap = size.iconLabelGap;
+    final leading = showLeadingIcon
+        ? Icon(Icons.close, size: size.leadingIconSize)
+        : null;
+    final trailing = showTrailingIcon
+        ? Icon(Icons.arrow_drop_down, size: size.trailingIconSize)
+        : null;
+
+    if (leading == null && trailing == null) {
+      return const Text('Button');
     }
 
-    return switch (baseId) {
-      'elevated' => labelButton(
-        builder: ElevatedButton.new,
-        buttonVariant: KpiButtonVariant.elevated,
-      ),
-      'filled' => labelButton(
-        builder: FilledButton.new,
-        buttonVariant: KpiButtonVariant.filled,
-      ),
-      'filled_tonal' => labelButton(
-        builder: FilledButton.tonal,
-        buttonVariant: KpiButtonVariant.filledTonal,
-      ),
-      'outlined' => labelButton(
-        builder: OutlinedButton.new,
-        buttonVariant: KpiButtonVariant.outlined,
-      ),
-      'text' => labelButton(
-        builder: TextButton.new,
-        buttonVariant: KpiButtonVariant.text,
-      ),
-      'icon' => IconButton(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (leading != null) ...[
+          leading,
+          SizedBox(width: gap),
+        ],
+        const Text('Button'),
+        if (trailing != null) ...[
+          SizedBox(width: gap),
+          trailing,
+        ],
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final onPressed = enabled ? () {} : null;
+    final style = KpiButtonStyles.labelStyle(context, size);
+    final child = _child();
+
+    return switch (mode) {
+      KpiButtonMode.filled => FilledButton(
         onPressed: onPressed,
-        iconSize: size.iconSize,
-        style: IconButton.styleFrom(
-          minimumSize: Size(size.height, size.height),
-          maximumSize: Size(size.height, size.height),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          foregroundColor: scheme.onSurfaceVariant,
-        ),
-        icon: const Icon(Icons.edit_outlined),
+        style: style,
+        child: child,
       ),
-      'fab' => SizedBox(
-        width: size.height,
-        height: size.height,
-        child: FloatingActionButton(
-          onPressed: onPressed,
-          backgroundColor: scheme.primaryContainer,
-          foregroundColor: scheme.onPrimaryContainer,
-          child: Icon(Icons.add, size: size.iconSize),
-        ),
+      KpiButtonMode.outlined => OutlinedButton(
+        onPressed: onPressed,
+        style: style,
+        child: child,
       ),
-      'extended_fab' => SizedBox(
-        height: size.height,
-        child: FloatingActionButton.extended(
-          onPressed: onPressed,
-          backgroundColor: scheme.primaryContainer,
-          foregroundColor: scheme.onPrimaryContainer,
-          icon: Icon(Icons.add, size: size.iconSize),
-          label: const Text('Label'),
-          extendedIconLabelSpacing: size.iconGap,
-          extendedPadding:
-              EdgeInsets.symmetric(horizontal: size.horizontalPadding),
-        ),
+      KpiButtonMode.tonal => FilledButton.tonal(
+        onPressed: onPressed,
+        style: style,
+        child: child,
       ),
-      _ => const SizedBox.shrink(),
+      KpiButtonMode.text => TextButton(
+        onPressed: onPressed,
+        style: style,
+        child: child,
+      ),
     };
   }
 }
 
-class _ButtonVariantRow {
-  const _ButtonVariantRow({
-    required this.id,
-    required this.label,
-    this.supportsIcons = true,
+class _IconButtonPreview extends StatelessWidget {
+  const _IconButtonPreview({
+    required this.mode,
+    required this.size,
+    required this.enabled,
   });
 
-  final String id;
-  final String label;
-  final bool supportsIcons;
-}
+  final KpiButtonMode mode;
+  final KpiButtonSize size;
+  final bool enabled;
 
-class _ButtonSizeSpec {
-  const _ButtonSizeSpec({
-    required this.label,
-    required this.height,
-    required this.horizontalPadding,
-    required this.iconSize,
-    required this.iconGap,
-  });
+  @override
+  Widget build(BuildContext context) {
+    final onPressed = enabled ? () {} : null;
+    final style = KpiButtonStyles.iconStyle(size);
+    const icon = Icon(Icons.close);
 
-  final String label;
-  final double height;
-  final double horizontalPadding;
-  final double iconSize;
-  final double iconGap;
+    return switch (mode) {
+      KpiButtonMode.filled => IconButton.filled(
+        onPressed: onPressed,
+        style: style,
+        icon: icon,
+      ),
+      KpiButtonMode.outlined => IconButton.outlined(
+        onPressed: onPressed,
+        style: style,
+        icon: icon,
+      ),
+      KpiButtonMode.tonal => IconButton.filledTonal(
+        onPressed: onPressed,
+        style: style,
+        icon: icon,
+      ),
+      KpiButtonMode.text => IconButton(
+        onPressed: onPressed,
+        style: style,
+        icon: icon,
+      ),
+    };
+  }
 }

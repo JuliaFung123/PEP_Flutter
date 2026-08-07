@@ -10,6 +10,7 @@ import '../models/pending_variant.dart';
 import '../widgets/color_role_swatch_grid.dart';
 import '../widgets/component_page_scaffold.dart';
 import '../widgets/component_section.dart';
+import '../widgets/kpi_button_styles.dart';
 import '../widgets/kpi_text_field.dart';
 import '../widgets/m3_color_picker.dart';
 
@@ -237,9 +238,21 @@ class _ComponentPreview extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                FilledButton(onPressed: () {}, child: const Text('Filled')),
-                OutlinedButton(onPressed: () {}, child: const Text('Outlined')),
-                TextButton(onPressed: () {}, child: const Text('Text')),
+                FilledButton(
+                  onPressed: () {},
+                  style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+                  child: const Text('Filled'),
+                ),
+                OutlinedButton(
+                  onPressed: () {},
+                  style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+                  child: const Text('Outlined'),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+                  child: const Text('Text'),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -311,7 +324,8 @@ class _ExportPanel extends StatelessWidget {
                 const SnackBar(content: Text('Theme snippet copied')),
               );
             },
-            icon: const Icon(Icons.copy_outlined),
+            style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+            icon: Icon(Icons.copy_outlined, size: KpiButtonSize.s40.iconSize),
             label: const Text('Copy snippet'),
           ),
         ),

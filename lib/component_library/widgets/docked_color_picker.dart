@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'kpi_button_styles.dart';
 import 'kpi_text_field.dart';
 import 'm3_color_picker.dart';
 
@@ -37,6 +38,10 @@ Future<Color?> showDockedColorPicker(
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(sheetContext).pop(),
+                        style: KpiButtonStyles.labelStyle(
+                          sheetContext,
+                          KpiButtonSize.s40,
+                        ),
                         child: const Text('Cancel'),
                       ),
                     ),
@@ -44,6 +49,10 @@ Future<Color?> showDockedColorPicker(
                     Expanded(
                       child: FilledButton(
                         onPressed: () => Navigator.of(sheetContext).pop(color),
+                        style: KpiButtonStyles.labelStyle(
+                          sheetContext,
+                          KpiButtonSize.s40,
+                        ),
                         child: const Text('Done'),
                       ),
                     ),
@@ -145,6 +154,7 @@ class _ColorPickerInputFieldState extends State<ColorPickerInputField> {
       prefixIcon: KpiColorSwatchPrefix(color: widget.value),
       suffixIcon: IconButton(
         icon: const Icon(Icons.palette_outlined),
+        style: KpiButtonStyles.iconStyle(KpiButtonSize.s40),
         onPressed: widget.enabled ? () => _open(context) : null,
       ),
       inputFormatters: [

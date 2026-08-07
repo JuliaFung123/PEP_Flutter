@@ -1,12 +1,37 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_typography.dart';
 import '../models/component_note.dart';
 import '../models/component_page_meta_data.dart';
 import '../models/pending_variant.dart';
 import '../widgets/component_page_scaffold.dart';
 import '../widgets/variant_matrix_table.dart';
 
+/// M3 small / search top app bar height.
+/// https://m3.material.io/components/app-bars/specs
+const double kM3ToolbarHeight = 64;
+
+/// Figma / M3 redline paddings (Flutter kit AppBar).
+/// https://www.figma.com/design/YeqrkvpScSQDy7H6cFRIgZ/Flutter-UI-Material-3?node-id=2073-130
+const double kM3AppBarEdgePadding = 4;
+const double kM3AppBarIconButtonSize = 48;
+const double kM3AppBarTitleGap = 4;
+const double kM3AppBarTitleInset = 16;
+const double kM3AppBarFlexibleTitleBottom = 12;
+const double kM3AppBarIconToolbarHeight = 56;
+const double kM3AppBarIconToolbarTopInset = 8;
+const double kM3SearchAppBarGap = 8;
+const double kM3MediumFlexibleHeight = 112;
+const double kM3LargeFlexibleHeight = 120;
+
+/// Leading slot = edge padding + 48 icon button.
+double get kM3AppBarLeadingWidth =>
+    kM3AppBarEdgePadding + kM3AppBarIconButtonSize;
+
 /// M3 Top app bar — https://m3.material.io/components/app-bars/specs
+///
+/// Figma typography + padding:
+/// https://www.figma.com/design/YeqrkvpScSQDy7H6cFRIgZ/Flutter-UI-Material-3?node-id=2073-130
 class AppBarsComponentPage extends StatefulWidget {
   const AppBarsComponentPage({super.key});
 
@@ -26,36 +51,65 @@ class AppBarsComponentPage extends StatefulWidget {
 class _AppBarsComponentPageState extends State<AppBarsComponentPage> {
   bool _showNavIcon = true;
   bool _showActions = true;
+  bool _showSubtitle = false;
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Small',
-      m3Behavior: 'Default top app bar; title aligned to leading edge.',
-      ourImplementation: 'AppBar with default configuration.',
+      variant: 'Padding / gap',
+      m3Behavior:
+          'Small: 4dp edge, 48 icon buttons, ~4dp title gap. '
+          'Flexible: 4dp icon edge, 8dp top icon inset, 16dp title inset, '
+          '12dp title bottom. Search: 4 / 8 / 8 / 4.',
+      ourImplementation:
+          'Overrides Flutter defaults (leadingWidth 56, titleSpacing 16). '
+          'Uses leadingWidth 52 (4+48), titleSpacing 4 (or 16 without leading), '
+          'actionsPadding end 4. Flexible titlePadding start 16 / bottom 12; '
+          'Large height 120 (not baseline 152).',
       action: 'Use as-is',
     ),
     ComponentNote(
-      variant: 'Center-aligned',
-      m3Behavior: 'Title centered in the app bar.',
-      ourImplementation: 'AppBar with centerTitle: true.',
+      variant: 'Small / Center-aligned title',
+      m3Behavior: 'Compact 64dp bar; title vertically centered.',
+      ourImplementation:
+          'Title = `AppTypography.titleSemiLarge` (18/26 · w500). '
+          'Subtitle = `TextTheme.titleSmall`. AppBarTheme matches this.',
       action: 'Use as-is',
     ),
     ComponentNote(
-      variant: 'Medium flexible',
-      m3Behavior: 'Taller bar; title in flexible space when expanded.',
-      ourImplementation: 'SliverAppBar with expandedHeight: 112.',
-      action: 'Modify or create variant',
+      variant: 'Medium flexible title',
+      m3Behavior: 'Expanded title in flexible space · 112dp.',
+      ourImplementation:
+          'Title = `TextTheme.headlineMedium` (28/36 · w400). '
+          'Subtitle = `TextTheme.titleSmall` · gap 4.',
+      action: 'Use as-is',
     ),
     ComponentNote(
-      variant: 'Large flexible',
-      m3Behavior: 'Largest flexible bar for prominent screens.',
-      ourImplementation: 'SliverAppBar with expandedHeight: 152.',
-      action: 'Modify or create variant',
+      variant: 'Large flexible title',
+      m3Behavior: 'Largest expanded title · 120dp (flexible, not baseline 152).',
+      ourImplementation:
+          'Title = `TextTheme.displaySmall` (36/44 · w400). '
+          'Subtitle = `TextTheme.titleMedium` · gap 8.',
+      action: 'Use as-is',
     ),
     ComponentNote(
-      variant: 'On scroll',
-      m3Behavior: 'Elevation and surface tint when content scrolls under bar.',
-      ourImplementation: 'scrolledUnderElevation on AppBar / pinned SliverAppBar.',
+      variant: 'Search',
+      m3Behavior: '64dp bar with search field · 4/8/8/4 gaps.',
+      ourImplementation:
+          '`SearchAnchor.bar` hint/text = `TextTheme.bodyLarge`; '
+          'titleSpacing 8 with leading.',
+      action: 'Use as-is',
+    ),
+    ComponentNote(
+      variant: 'Collapsing medium → small',
+      m3Behavior:
+          'Default M3 Medium (and Large) top app bar: expanded title under '
+          'the icon row; on scroll collapses to Small (64) with the title in '
+          'the toolbar. Requires scroll wiring — not automatic alone.',
+      ourImplementation:
+          '`SliverAppBar` pinned · expanded ≈ Medium 112 · toolbar 64. '
+          'Expanded title = `headlineMedium` (wrap OK); collapsed = '
+          '`titleSemiLarge` single line. Live demo below (scroll inside). '
+          'Used on Ticket details.',
       action: 'Use as-is',
     ),
   ];
@@ -68,26 +122,32 @@ class _AppBarsComponentPageState extends State<AppBarsComponentPage> {
       suggestedAction: 'Create new page when needed',
     ),
     PendingVariant(
-      name: 'Search app bar',
-      foundIn: 'M3 search patterns',
-      description: 'App bar with integrated search field.',
-      suggestedAction: 'Promote to Part 2 or layout pattern',
+      name: 'Immersive collapsing AppBar + image header',
+      foundIn: '活動 (Activity) page',
+      description:
+          'Pinned SliverAppBar over ImageHeader: no title at rest (back only); '
+          'when the page headline scrolls under the bar, that text becomes the '
+          'AppBar title and the bar becomes opaque.',
+      suggestedAction:
+          'Review whether this is an App bars layout pattern, an Image header '
+          'composition, or both — then promote a documented recipe',
     ),
   ];
 
-  static const _rows = <VariantMatrixRow>[
-    VariantMatrixRow(id: 'small', label: 'Small'),
-    VariantMatrixRow(id: 'center_aligned', label: 'Center-aligned'),
-    VariantMatrixRow(
+  static const _variants = <_AppBarVariant>[
+    _AppBarVariant(id: 'small', label: 'Small'),
+    _AppBarVariant(id: 'center_aligned', label: 'Center-aligned'),
+    _AppBarVariant(
       id: 'medium_flexible',
       label: 'Medium flexible',
-      supportsTrailingIcon: true,
+      supportsActions: true,
     ),
-    VariantMatrixRow(
+    _AppBarVariant(
       id: 'large_flexible',
       label: 'Large flexible',
-      supportsTrailingIcon: true,
+      supportsActions: true,
     ),
+    _AppBarVariant(id: 'search', label: 'Search', supportsActions: true),
   ];
 
   @override
@@ -108,10 +168,35 @@ class _AppBarsComponentPageState extends State<AppBarsComponentPage> {
             trailingLabel: 'Action icons',
             onLeadingChanged: (v) => setState(() => _showNavIcon = v),
             onTrailingChanged: (v) => setState(() => _showActions = v),
+            showHelperText: _showSubtitle,
+            helperTextLabel: 'Subtitle',
+            onHelperTextChanged: (v) => setState(() => _showSubtitle = v),
+          ),
+          const SizedBox(height: 16),
+          for (var i = 0; i < _variants.length; i++) ...[
+            if (i > 0) const SizedBox(height: 12),
+            _AppBarPreview(
+              variant: _variants[i],
+              showNavIcon: _showNavIcon,
+              showActions: _showActions && _variants[i].supportsActions,
+              showSubtitle: _showSubtitle,
+            ),
+          ],
+          const SizedBox(height: 24),
+          Text(
+            'Collapsing medium → small',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'M3 default Medium collapse. Scroll inside the frame — hard to '
+            'show as a static matrix cell.',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 12),
-          _AppBarVariantTable(
-            rows: _rows,
+          _CollapsingMediumDemo(
             showNavIcon: _showNavIcon,
             showActions: _showActions,
           ),
@@ -121,126 +206,61 @@ class _AppBarsComponentPageState extends State<AppBarsComponentPage> {
   }
 }
 
-/// App bars use Default / Scrolled columns instead of Enabled / Disabled.
-class _AppBarVariantTable extends StatelessWidget {
-  const _AppBarVariantTable({
-    required this.rows,
-    required this.showNavIcon,
-    required this.showActions,
+class _AppBarVariant {
+  const _AppBarVariant({
+    required this.id,
+    required this.label,
+    this.supportsActions = true,
   });
 
-  final List<VariantMatrixRow> rows;
-  final bool showNavIcon;
-  final bool showActions;
-
-  @override
-  Widget build(BuildContext context) {
-    final borderColor = Theme.of(context).colorScheme.outlineVariant;
-    final labelStyle = Theme.of(context).textTheme.labelLarge;
-    final bodyStyle = Theme.of(context).textTheme.bodyMedium;
-
-    return SizedBox(
-      width: double.infinity,
-      child: Table(
-        columnWidths: const {
-          0: FlexColumnWidth(1.4),
-          1: FlexColumnWidth(1.6),
-          2: FlexColumnWidth(1.6),
-        },
-        border: TableBorder.all(color: borderColor),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: [
-            TableRow(
-              children: [
-                _cell(
-                  child: Text('Variant', style: labelStyle),
-                  alignment: Alignment.centerLeft,
-                ),
-                _cell(
-                  child: Text('Default', style: labelStyle, textAlign: TextAlign.center),
-                ),
-                _cell(
-                  child: Text('Scrolled', style: labelStyle, textAlign: TextAlign.center),
-                ),
-              ],
-            ),
-            for (final row in rows)
-              TableRow(
-                children: [
-                  _cell(
-                    child: Text(row.label, style: bodyStyle),
-                    alignment: Alignment.centerLeft,
-                  ),
-                  _cell(
-                    child: _AppBarPreview(
-                      variantId: row.id,
-                      scrolled: false,
-                      showNavIcon: showNavIcon && row.supportsLeadingIcon,
-                      showActions: showActions && row.supportsTrailingIcon,
-                    ),
-                  ),
-                  _cell(
-                    child: _AppBarPreview(
-                      variantId: row.id,
-                      scrolled: true,
-                      showNavIcon: showNavIcon && row.supportsLeadingIcon,
-                      showActions: showActions && row.supportsTrailingIcon,
-                    ),
-                  ),
-                ],
-              ),
-        ],
-      ),
-    );
-  }
-
-  Widget _cell({
-    required Widget child,
-    Alignment alignment = Alignment.center,
-  }) {
-    return TableCell(
-      child: Container(
-        width: double.infinity,
-        alignment: alignment,
-        padding: const EdgeInsets.all(12),
-        child: child,
-      ),
-    );
-  }
+  final String id;
+  final String label;
+  final bool supportsActions;
 }
 
 class _AppBarPreview extends StatelessWidget {
   const _AppBarPreview({
-    required this.variantId,
-    required this.scrolled,
+    required this.variant,
     required this.showNavIcon,
     required this.showActions,
+    required this.showSubtitle,
   });
 
-  final String variantId;
-  final bool scrolled;
+  final _AppBarVariant variant;
   final bool showNavIcon;
   final bool showActions;
+  final bool showSubtitle;
 
   @override
   Widget build(BuildContext context) {
+    final height = _previewHeight;
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: SizedBox(
         width: double.infinity,
-        height: _previewHeight,
-        child: switch (variantId) {
+        height: height,
+        child: switch (variant.id) {
           'small' || 'center_aligned' => _SmallAppBarPreview(
-            centerTitle: variantId == 'center_aligned',
-            scrolled: scrolled,
+            title: variant.label,
+            centerTitle: variant.id == 'center_aligned',
             showNavIcon: showNavIcon,
             showActions: showActions,
+            showSubtitle: showSubtitle,
+            toolbarHeight: height,
           ),
           'medium_flexible' || 'large_flexible' => _FlexibleAppBarPreview(
-            expandedHeight: variantId == 'large_flexible' ? 152 : 112,
-            scrolled: scrolled,
+            title: variant.label,
+            expandedHeight: height,
             showNavIcon: showNavIcon,
             showActions: showActions,
+            showSubtitle: showSubtitle,
+            isLarge: variant.id == 'large_flexible',
+          ),
+          'search' => _SearchAppBarPreview(
+            title: 'Body Large',
+            showNavIcon: showNavIcon,
+            showActions: showActions,
+            toolbarHeight: height,
           ),
           _ => const SizedBox.shrink(),
         },
@@ -248,106 +268,277 @@ class _AppBarPreview extends StatelessWidget {
     );
   }
 
-  double get _previewHeight => switch (variantId) {
-    'medium_flexible' => 112,
-    'large_flexible' => 152,
-    _ => 64,
+  double get _previewHeight => switch (variant.id) {
+    'medium_flexible' => kM3MediumFlexibleHeight,
+    'large_flexible' => kM3LargeFlexibleHeight,
+    _ => kM3ToolbarHeight,
   };
+}
+
+Widget _m3AppBarIconButton({
+  required IconData icon,
+  required VoidCallback onPressed,
+}) {
+  // SizedBox locks the hit target — AppBar leading/actions otherwise stretch
+  // to the full toolbar (or flexible) height.
+  return SizedBox(
+    width: kM3AppBarIconButtonSize,
+    height: kM3AppBarIconButtonSize,
+    child: IconButton(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 24),
+      padding: EdgeInsets.zero,
+      style: IconButton.styleFrom(
+        minimumSize: const Size(
+          kM3AppBarIconButtonSize,
+          kM3AppBarIconButtonSize,
+        ),
+        maximumSize: const Size(
+          kM3AppBarIconButtonSize,
+          kM3AppBarIconButtonSize,
+        ),
+        fixedSize: const Size(
+          kM3AppBarIconButtonSize,
+          kM3AppBarIconButtonSize,
+        ),
+        padding: EdgeInsets.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.standard,
+      ),
+    ),
+  );
+}
+
+Widget? _m3Leading({
+  required bool show,
+  required IconData icon,
+}) {
+  if (!show) return null;
+  return Padding(
+    padding: const EdgeInsetsDirectional.only(start: kM3AppBarEdgePadding),
+    child: Center(
+      child: _m3AppBarIconButton(icon: icon, onPressed: _noop),
+    ),
+  );
+}
+
+List<Widget>? _m3Actions({required bool show}) {
+  if (!show) return null;
+  return [
+    Center(child: _m3AppBarIconButton(icon: Icons.search, onPressed: _noop)),
+    Center(
+      child: _m3AppBarIconButton(icon: Icons.calendar_today, onPressed: _noop),
+    ),
+  ];
 }
 
 class _SmallAppBarPreview extends StatelessWidget {
   const _SmallAppBarPreview({
+    required this.title,
     required this.centerTitle,
-    required this.scrolled,
     required this.showNavIcon,
     required this.showActions,
+    required this.showSubtitle,
+    required this.toolbarHeight,
   });
 
+  final String title;
   final bool centerTitle;
-  final bool scrolled;
   final bool showNavIcon;
   final bool showActions;
+  final bool showSubtitle;
+  final double toolbarHeight;
 
   @override
   Widget build(BuildContext context) {
+    final typography = AppTypography.of(context);
+    final textTheme = Theme.of(context).textTheme;
+
     return AppBar(
-      elevation: scrolled ? 3 : 0,
+      // Isolated preview — do not inset for status bar (would un-center content).
+      primary: false,
+      elevation: 0,
       scrolledUnderElevation: 3,
+      toolbarHeight: toolbarHeight,
       centerTitle: centerTitle,
-      automaticallyImplyLeading: showNavIcon,
-      leading: showNavIcon ? null : const SizedBox.shrink(),
-      title: Text('Title', style: Theme.of(context).textTheme.titleLarge),
-      actions: showActions ? _actionIcons : null,
+      automaticallyImplyLeading: false,
+      leadingWidth: showNavIcon ? kM3AppBarLeadingWidth : 0,
+      // M3 Small: 4dp gap after leading; 16dp inset when no leading.
+      titleSpacing: showNavIcon ? kM3AppBarTitleGap : kM3AppBarTitleInset,
+      actionsPadding: const EdgeInsetsDirectional.only(end: kM3AppBarEdgePadding),
+      leading: _m3Leading(show: showNavIcon, icon: Icons.arrow_back),
+      title: _AppBarTitleBlock(
+        title: title,
+        centerTitle: centerTitle,
+        showSubtitle: showSubtitle,
+        titleStyle: typography.titleSemiLarge,
+        subtitleStyle: textTheme.titleSmall,
+        titleSubtitleGap: 0,
+      ),
+      actions: _m3Actions(show: showActions),
     );
   }
 }
 
-class _FlexibleAppBarPreview extends StatefulWidget {
-  const _FlexibleAppBarPreview({
-    required this.expandedHeight,
-    required this.scrolled,
+class _SearchAppBarPreview extends StatelessWidget {
+  const _SearchAppBarPreview({
+    required this.title,
     required this.showNavIcon,
     required this.showActions,
+    required this.toolbarHeight,
   });
 
-  final double expandedHeight;
-  final bool scrolled;
+  final String title;
   final bool showNavIcon;
   final bool showActions;
-
-  @override
-  State<_FlexibleAppBarPreview> createState() => _FlexibleAppBarPreviewState();
-}
-
-class _FlexibleAppBarPreviewState extends State<_FlexibleAppBarPreview> {
-  late final ScrollController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = ScrollController(
-      initialScrollOffset: _collapseOffset,
-    );
-  }
-
-  @override
-  void didUpdateWidget(_FlexibleAppBarPreview oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.scrolled != widget.scrolled ||
-        oldWidget.expandedHeight != widget.expandedHeight) {
-      _controller.jumpTo(_collapseOffset);
-    }
-  }
-
-  double get _collapseOffset =>
-      widget.scrolled ? widget.expandedHeight - kToolbarHeight : 0;
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final double toolbarHeight;
 
   @override
   Widget build(BuildContext context) {
+    final bodyLarge = Theme.of(context).textTheme.bodyLarge;
+    final onVariant = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    return AppBar(
+      primary: false,
+      elevation: 0,
+      scrolledUnderElevation: 3,
+      toolbarHeight: toolbarHeight,
+      automaticallyImplyLeading: false,
+      leadingWidth: showNavIcon ? kM3AppBarLeadingWidth : 0,
+      // Search redline 4/8/8/4 — 8 between leading↔field and field↔actions.
+      titleSpacing: showNavIcon ? kM3SearchAppBarGap : kM3AppBarTitleInset,
+      actionsPadding: const EdgeInsetsDirectional.only(end: kM3AppBarEdgePadding),
+      leading: _m3Leading(show: showNavIcon, icon: Icons.menu),
+      title: SearchAnchor.bar(
+        barHintText: title,
+        barHintStyle: WidgetStatePropertyAll(
+          bodyLarge?.copyWith(color: onVariant),
+        ),
+        barTextStyle: WidgetStatePropertyAll(bodyLarge),
+        suggestionsBuilder: (context, controller) {
+          if (controller.text.isEmpty) {
+            return const <Widget>[
+              ListTile(title: Text('Recent searches appear here')),
+            ];
+          }
+          return [
+            for (final tip in ['Ticket', '圖文', 'Activity'])
+              if (tip.toLowerCase().contains(controller.text.toLowerCase()))
+                ListTile(
+                  title: Text(tip),
+                  onTap: () => controller.closeView(tip),
+                ),
+          ];
+        },
+      ),
+      actions: showActions
+          ? [
+              Center(
+                child: _m3AppBarIconButton(
+                  icon: Icons.more_vert,
+                  onPressed: _noop,
+                ),
+              ),
+            ]
+          : null,
+    );
+  }
+}
+
+class _FlexibleAppBarPreview extends StatelessWidget {
+  const _FlexibleAppBarPreview({
+    required this.title,
+    required this.expandedHeight,
+    required this.showNavIcon,
+    required this.showActions,
+    required this.showSubtitle,
+    required this.isLarge,
+  });
+
+  final String title;
+  final double expandedHeight;
+  final bool showNavIcon;
+  final bool showActions;
+  final bool showSubtitle;
+  final bool isLarge;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    // Figma Medium = HeadlineMedium; Large = DisplaySmall.
+    // Figma Medium subtitle = TitleSmall; Large subtitle = TitleMedium.
+    final titleStyle = isLarge ? textTheme.displaySmall : textTheme.headlineMedium;
+    final subtitleStyle = isLarge ? textTheme.titleMedium : textTheme.titleSmall;
+    // Medium title↔subtitle gap 4; Large gap 8.
+    final titleSubtitleGap = isLarge ? 8.0 : 4.0;
+
     return CustomScrollView(
-      controller: _controller,
       physics: const NeverScrollableScrollPhysics(),
       slivers: [
+        // Icon row = 56 (8 top inset + 48 buttons); total 112 / 120.
         SliverAppBar(
+          primary: false,
           pinned: true,
-          expandedHeight: widget.expandedHeight,
+          toolbarHeight: kM3AppBarIconToolbarHeight,
+          expandedHeight: expandedHeight,
           scrolledUnderElevation: 3,
-          forceElevated: widget.scrolled,
-          automaticallyImplyLeading: widget.showNavIcon,
-          leading: widget.showNavIcon ? null : const SizedBox.shrink(),
-          actions: widget.showActions ? _actionIcons : null,
+          automaticallyImplyLeading: false,
+          leadingWidth: showNavIcon ? kM3AppBarLeadingWidth : 0,
+          titleSpacing: 0,
+          actionsPadding: const EdgeInsetsDirectional.only(
+            end: kM3AppBarEdgePadding,
+          ),
+          leading: showNavIcon
+              ? Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                    start: kM3AppBarEdgePadding,
+                    top: kM3AppBarIconToolbarTopInset,
+                  ),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: _m3AppBarIconButton(
+                      icon: Icons.arrow_back,
+                      onPressed: _noop,
+                    ),
+                  ),
+                )
+              : null,
+          actions: showActions
+              ? [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: kM3AppBarIconToolbarTopInset,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _m3AppBarIconButton(
+                          icon: Icons.search,
+                          onPressed: _noop,
+                        ),
+                        _m3AppBarIconButton(
+                          icon: Icons.calendar_today,
+                          onPressed: _noop,
+                        ),
+                      ],
+                    ),
+                  ),
+                ]
+              : null,
           flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              'Title',
-              style: Theme.of(context).textTheme.headlineSmall,
+            title: _AppBarTitleBlock(
+              title: title,
+              centerTitle: false,
+              showSubtitle: showSubtitle,
+              titleStyle: titleStyle,
+              subtitleStyle: subtitleStyle,
+              titleSubtitleGap: titleSubtitleGap,
             ),
-            titlePadding: const EdgeInsetsDirectional.only(start: 16, bottom: 16),
+            titlePadding: const EdgeInsetsDirectional.only(
+              start: kM3AppBarTitleInset,
+              end: kM3AppBarTitleInset,
+              bottom: kM3AppBarFlexibleTitleBottom,
+            ),
             centerTitle: false,
             expandedTitleScale: 1,
           ),
@@ -357,9 +548,176 @@ class _FlexibleAppBarPreviewState extends State<_FlexibleAppBarPreview> {
   }
 }
 
-const _actionIcons = [
-  IconButton(onPressed: _noop, icon: Icon(Icons.search)),
-  IconButton(onPressed: _noop, icon: Icon(Icons.more_vert)),
-];
+class _AppBarTitleBlock extends StatelessWidget {
+  const _AppBarTitleBlock({
+    required this.title,
+    required this.centerTitle,
+    required this.showSubtitle,
+    required this.titleSubtitleGap,
+    this.titleStyle,
+    this.subtitleStyle,
+  });
+
+  final String title;
+  final bool centerTitle;
+  final bool showSubtitle;
+  final double titleSubtitleGap;
+  final TextStyle? titleStyle;
+  final TextStyle? subtitleStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = AppTypography.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final resolvedTitle = titleStyle ?? typography.titleSemiLarge;
+    final resolvedSubtitle = subtitleStyle ?? textTheme.titleSmall;
+    final colors = Theme.of(context).colorScheme;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: centerTitle
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: resolvedTitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (showSubtitle) ...[
+          if (titleSubtitleGap > 0) SizedBox(height: titleSubtitleGap),
+          Text(
+            'Subtitle',
+            style: resolvedSubtitle?.copyWith(color: colors.onSurfaceVariant),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ],
+    );
+  }
+}
 
 void _noop() {}
+
+/// Scrollable mini-demo — matrix cells can't show Medium→Small collapse.
+class _CollapsingMediumDemo extends StatelessWidget {
+  const _CollapsingMediumDemo({
+    required this.showNavIcon,
+    required this.showActions,
+  });
+
+  final bool showNavIcon;
+  final bool showActions;
+
+  static const _demoTitle =
+      'Ticket name — long title wraps when expanded, ellipsis when collapsed';
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: scheme.outlineVariant),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: SizedBox(
+          height: 280,
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                primary: false,
+                pinned: true,
+                toolbarHeight: kM3ToolbarHeight,
+                expandedHeight: kM3MediumFlexibleHeight + 24,
+                scrolledUnderElevation: 3,
+                backgroundColor: scheme.surface,
+                surfaceTintColor: scheme.surfaceTint,
+                automaticallyImplyLeading: false,
+                titleSpacing: 0,
+                leadingWidth: showNavIcon ? kM3AppBarLeadingWidth : 0,
+                actionsPadding: const EdgeInsetsDirectional.only(
+                  end: kM3AppBarEdgePadding,
+                ),
+                leading: showNavIcon
+                    ? Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          start: kM3AppBarEdgePadding,
+                        ),
+                        child: Align(
+                          child: _m3AppBarIconButton(
+                            icon: Icons.arrow_back,
+                            onPressed: _noop,
+                          ),
+                        ),
+                      )
+                    : null,
+                actions: showActions
+                    ? [
+                        _m3AppBarIconButton(
+                          icon: Icons.search,
+                          onPressed: _noop,
+                        ),
+                      ]
+                    : null,
+                flexibleSpace: Builder(
+                  builder: (context) {
+                    final settings = context
+                        .dependOnInheritedWidgetOfExactType<
+                            FlexibleSpaceBarSettings>();
+                    final collapsed = settings == null ||
+                        settings.currentExtent <= settings.minExtent + 1;
+                    final typography = AppTypography.of(context);
+
+                    return FlexibleSpaceBar(
+                      centerTitle: false,
+                      expandedTitleScale: 1,
+                      titlePadding: EdgeInsetsDirectional.only(
+                        start: collapsed
+                            ? (showNavIcon
+                                ? kM3AppBarEdgePadding +
+                                    kM3AppBarIconButtonSize
+                                : kM3AppBarTitleInset)
+                            : kM3AppBarTitleInset,
+                        end: kM3AppBarTitleInset,
+                        bottom: collapsed
+                            ? (kM3ToolbarHeight - 26) / 2
+                            : kM3AppBarFlexibleTitleBottom,
+                      ),
+                      title: Text(
+                        _demoTitle,
+                        maxLines: collapsed ? 1 : 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: collapsed
+                            ? typography.titleSemiLarge
+                            : textTheme.headlineMedium,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SliverList.builder(
+                itemCount: 12,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    dense: true,
+                    title: Text(
+                      'Scroll content ${index + 1}',
+                      style: textTheme.bodyMedium,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

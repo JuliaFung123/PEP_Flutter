@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../component_library/widgets/kpi_button_styles.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -18,12 +20,24 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KPI Flutter'),
+        title: Text('KPI Flutter', style: textTheme.titleLarge),
         actions: [
-          IconButton(
-            tooltip: 'Settings',
-            onPressed: () {},
-            icon: const Icon(Icons.settings_outlined),
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: IconButton(
+              tooltip: 'Settings',
+              onPressed: () {},
+              style: IconButton.styleFrom(
+                minimumSize: const Size(48, 48),
+                maximumSize: const Size(48, 48),
+                fixedSize: const Size(48, 48),
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.standard,
+              ),
+              icon: const Icon(Icons.settings_outlined, size: 24),
+            ),
           ),
         ],
       ),
@@ -61,14 +75,17 @@ class _HomePageState extends State<HomePage> {
             children: [
               FilledButton(
                 onPressed: _incrementCounter,
+                style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
                 child: const Text('Filled'),
               ),
               OutlinedButton(
                 onPressed: _incrementCounter,
+                style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
                 child: const Text('Outlined'),
               ),
               TextButton(
                 onPressed: _incrementCounter,
+                style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
                 child: const Text('Text'),
               ),
             ],
@@ -85,6 +102,7 @@ class _HomePageState extends State<HomePage> {
               subtitle: Text('Taps: $_counter', style: textTheme.bodySmall),
               trailing: IconButton.filledTonal(
                 onPressed: _incrementCounter,
+                style: KpiButtonStyles.iconStyle(KpiButtonSize.s40),
                 icon: const Icon(Icons.add),
               ),
             ),
