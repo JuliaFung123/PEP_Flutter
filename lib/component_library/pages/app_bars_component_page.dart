@@ -79,8 +79,9 @@ class _AppBarsComponentPageState extends State<AppBarsComponentPage> {
       variant: 'Medium flexible title',
       m3Behavior: 'Expanded title in flexible space · 112dp.',
       ourImplementation:
-          'Title = `TextTheme.headlineMedium` (28/36 · w400). '
-          'Subtitle = `TextTheme.titleSmall` · gap 4.',
+          'Title = `AppTypography.titleSemiLarge` (18/26 · w500) — Figma '
+          'AppBar Medium node 2073:100. Subtitle = `TextTheme.titleSmall` · '
+          'gap 4.',
       action: 'Use as-is',
     ),
     ComponentNote(
@@ -107,9 +108,8 @@ class _AppBarsComponentPageState extends State<AppBarsComponentPage> {
           'the toolbar. Requires scroll wiring — not automatic alone.',
       ourImplementation:
           '`SliverAppBar` pinned · expanded ≈ Medium 112 · toolbar 64. '
-          'Expanded title = `headlineMedium` (wrap OK); collapsed = '
-          '`titleSemiLarge` single line. Live demo below (scroll inside). '
-          'Used on Ticket details.',
+          'Expanded + collapsed title = `titleSemiLarge` (Figma Medium). '
+          'Live demo below (scroll inside). Used on Ticket details.',
       action: 'Use as-is',
     ),
   ];
@@ -465,9 +465,11 @@ class _FlexibleAppBarPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    // Figma Medium = HeadlineMedium; Large = DisplaySmall.
+    final typography = AppTypography.of(context);
+    // Figma Medium = TitleSemiLarge (2073:100); Large = DisplaySmall.
     // Figma Medium subtitle = TitleSmall; Large subtitle = TitleMedium.
-    final titleStyle = isLarge ? textTheme.displaySmall : textTheme.headlineMedium;
+    final titleStyle =
+        isLarge ? textTheme.displaySmall : typography.titleSemiLarge;
     final subtitleStyle = isLarge ? textTheme.titleMedium : textTheme.titleSmall;
     // Medium title↔subtitle gap 4; Large gap 8.
     final titleSubtitleGap = isLarge ? 8.0 : 4.0;
@@ -694,9 +696,7 @@ class _CollapsingMediumDemo extends StatelessWidget {
                         _demoTitle,
                         maxLines: collapsed ? 1 : 2,
                         overflow: TextOverflow.ellipsis,
-                        style: collapsed
-                            ? typography.titleSemiLarge
-                            : textTheme.headlineMedium,
+                        style: typography.titleSemiLarge,
                       ),
                     );
                   },

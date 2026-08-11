@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/activity/presentation/activity_page.dart';
+import '../../features/activity/presentation/activity_list_page.dart';
 import '../models/component_library_group.dart';
 import '../models/component_page_meta.dart';
 import '../registry/component_registry.dart';
@@ -30,7 +30,7 @@ class ComponentLibraryPage extends StatelessWidget {
                   leading: const Icon(Icons.local_activity_outlined),
                   title: Text('活動', style: textTheme.titleMedium),
                   subtitle: Text(
-                    'Open the activity detail page',
+                    'List → detail (tap a card)',
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -39,7 +39,7 @@ class ComponentLibraryPage extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => const ActivityPage(),
+                        builder: (_) => const ActivityListPage(),
                       ),
                     );
                   },

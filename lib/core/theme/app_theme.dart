@@ -58,14 +58,19 @@ abstract final class AppTheme {
 
 
     final typography = Typography.material2021(platform: defaultTargetPlatform);
-
-    final baseTextTheme =
+    // M3 splits color (black/white, inherit:true, no weight) from geometry
+    // (englishLike/dense/tall). Theme.of later does geometry.merge(textTheme).
+    // Family must be chosen from **geometry** weights — black.titleMedium has
+    // fontWeight == null, so familyFor used to map every slot to Regular and
+    // titleMedium looked identical to bodyLarge.
+    final geometry = typography.englishLike;
+    final colors =
         brightness == Brightness.light ? typography.black : typography.white;
+    final baseTextTheme = geometry.merge(colors);
 
-    // Noto Sans TC (繁中 + Latin) — Roboto has no CJK, so Chinese weight failed.
-    // Figma kit metrics still applied (TitleLarge w500, BodySmall tracking 0):
+    // Noto Sans TC assets — one family per weight (Flutter web).
+    // Figma kit overrides (TitleLarge w500, BodySmall tracking 0):
     // https://www.figma.com/design/YeqrkvpScSQDy7H6cFRIgZ/Flutter-UI-Material-3?node-id=2292-268
-    // Use AppFonts.style(...) when changing weight so the correct face loads.
     final notoTextTheme = AppFonts.textTheme(baseTextTheme);
     final textTheme = notoTextTheme.copyWith(
       titleLarge: AppFonts.style(

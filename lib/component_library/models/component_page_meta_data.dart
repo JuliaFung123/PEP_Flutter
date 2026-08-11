@@ -19,6 +19,6 @@ class ComponentPageMetaData {
   /// Lower values appear first in the component library list.
   final int sortOrder;
 
-  /// Theme pages are listed under "Theme"; all others under "Atom Components".
+  /// List section: Theme / Effect / Atom Components / Layout Block.
   final ComponentLibraryGroup group;
 }

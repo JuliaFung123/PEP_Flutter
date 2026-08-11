@@ -11,7 +11,7 @@ class AppTypography extends ThemeExtension<AppTypography> {
   const AppTypography({required this.titleSemiLarge});
 
   /// Title between Title Medium (16) and Title Large (22).
-  /// Noto Sans TC · 18sp / 26 · w500 · tracking 0.
+  /// Noto Sans TC (asset) · 18sp / 26 · w500 · tracking 0.
   final TextStyle titleSemiLarge;
 
   factory AppTypography.fromTextTheme(TextTheme textTheme) {

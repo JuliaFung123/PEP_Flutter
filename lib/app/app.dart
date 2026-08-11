@@ -40,7 +40,7 @@ class _KpiAppState extends State<KpiApp> {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(primary: primary, secondary: secondary),
             darkTheme: AppTheme.dark(primary: primary, secondary: secondary),
-            themeMode: ThemeMode.system,
+            themeMode: _themeController.themeMode,
             home: const ComponentLibraryPage(),
           );
         },

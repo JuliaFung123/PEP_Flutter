@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_fonts.dart';
 import '../../core/theme/app_typography.dart';
 import '../models/component_library_group.dart';
 import '../models/component_note.dart';
@@ -31,8 +32,11 @@ class TypographyComponentPage extends StatelessWidget {
       m3Behavior: 'Typography.material2021 englishLike defaults (Roboto).',
       ourImplementation:
           'Same size / weight / tracking as Figma Flutter/* styles. Family is '
-          'Noto Sans TC (繁中 + Latin) with Noto Sans SC fallback — Roboto has '
-          'no CJK glyphs so Chinese weight looked flat.',
+          'Noto Sans TC bundled as **one pubspec family per weight** '
+          '(`NotoSansTC` / `Medium` / `SemiBold` / `Bold`). Theme builds from '
+          '`englishLike.merge(black)` so w500 is known before `familyFor` runs '
+          '(color-only `typography.black` has null weights → every slot was '
+          'Regular, so titleMedium matched bodyLarge).',
       action: 'Use as-is',
     ),
     ComponentNote(
@@ -90,7 +94,14 @@ class TypographyComponentPage extends StatelessWidget {
       description: meta.description,
       notes: _notes,
       pendingVariants: _pending,
-      variantsSection: _TypographyVariantList(styles: _styles),
+      variantsSection: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _WeightProofStrip(),
+          const SizedBox(height: 16),
+          _TypographyVariantList(styles: _styles),
+        ],
+      ),
     );
   }
 }
@@ -330,6 +341,49 @@ const _figmaSpecs = <_StyleSlot, _FlutterDefaultSpec>{
   ),
 };
 
+class _WeightProofStrip extends StatelessWidget {
+  const _WeightProofStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+    Widget row(String label, FontWeight weight) {
+      return Text(
+        '$label  繁中 Aa',
+        style: TextStyle(
+          fontFamily: AppFonts.familyFor(weight),
+          fontWeight: weight,
+          fontSize: 22,
+          height: 28 / 22,
+          color: onSurface,
+        ),
+      );
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Weight check (w400 vs w500 should differ)',
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: muted,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            row('Regular w400', FontWeight.w400),
+            row('Medium  w500', FontWeight.w500),
+            row('Bold    w700', FontWeight.w700),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _TypographyVariantList extends StatelessWidget {
   const _TypographyVariantList({required this.styles});
 
@@ -427,15 +481,8 @@ class _TypographySample extends StatelessWidget {
   }
 }
 
-/// google_fonts sets [TextStyle.fontFamily] to variant ids like
-/// `NotoSansTC_regular`. Spec lines show the clean family name.
 String _displayFontFamily(TextStyle style) {
-  final raw = style.fontFamily ?? '';
-  final id = raw.split('_').first;
-  if (id.contains('NotoSansTC')) return 'Noto Sans TC';
-  if (id.contains('NotoSansSC')) return 'Noto Sans SC';
-  if (id.isEmpty) return 'Noto Sans TC';
-  return id;
+  return AppFonts.displayName;
 }
 
 class _SpecLine extends StatelessWidget {

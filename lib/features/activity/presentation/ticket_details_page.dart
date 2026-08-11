@@ -168,9 +168,7 @@ class _TicketDetailsPageState extends State<TicketDetailsPage> {
                           _ticketName,
                           maxLines: collapsed ? 1 : 3,
                           overflow: TextOverflow.ellipsis,
-                          style: collapsed
-                              ? typography.titleSemiLarge
-                              : textTheme.headlineMedium,
+                          style: typography.titleSemiLarge,
                         ),
                       );
                     },

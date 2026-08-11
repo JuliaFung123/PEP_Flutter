@@ -45,6 +45,7 @@ const kDemoImageHeaderAssets = <String>[
   'assets/images/demo/demo_header_2.png',
   'assets/images/demo/demo_header_3.png',
   'assets/images/demo/demo_header_4.png',
+  'assets/images/demo/demo_header_5.png',
 ];
 
 /// [ImageProvider] for a network URL or local asset path.

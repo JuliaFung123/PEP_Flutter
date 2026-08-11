@@ -7,13 +7,16 @@ import '../pages/app_bars_component_page.dart';
 import '../pages/badges_component_page.dart';
 import '../pages/buttons_component_page.dart';
 import '../pages/buy_quantity_component_page.dart';
+import '../pages/carousel_component_page.dart';
 import '../pages/checkbox_component_page.dart';
 import '../pages/chips_component_page.dart';
 import '../pages/color_picker_component_page.dart';
 import '../pages/color_theme_component_page.dart';
 import '../pages/date_picker_component_page.dart';
 import '../pages/divider_component_page.dart';
+import '../pages/glass_surface_component_page.dart';
 import '../pages/image_header_component_page.dart';
+import '../pages/liquid_glass_component_page.dart';
 import '../pages/photo_gallery_component_page.dart';
 import '../pages/progress_indicators_component_page.dart';
 import '../pages/radio_button_component_page.dart';
@@ -32,6 +35,8 @@ abstract final class ComponentRegistry {
       [
         _entry(ColorThemeComponentPage.meta, const ColorThemeComponentPage()),
         _entry(TypographyComponentPage.meta, const TypographyComponentPage()),
+        _entry(GlassSurfaceComponentPage.meta, const GlassSurfaceComponentPage()),
+        _entry(LiquidGlassComponentPage.meta, const LiquidGlassComponentPage()),
         _entry(ColorPickerComponentPage.meta, const ColorPickerComponentPage()),
         _entry(DatePickerComponentPage.meta, const DatePickerComponentPage()),
         _entry(AppBarsComponentPage.meta, const AppBarsComponentPage()),
@@ -51,6 +56,7 @@ abstract final class ComponentRegistry {
         ),
         _entry(TicketCardComponentPage.meta, const TicketCardComponentPage()),
         _entry(BuyQuantityComponentPage.meta, const BuyQuantityComponentPage()),
+        _entry(CarouselComponentPage.meta, const CarouselComponentPage()),
         _entry(BadgesComponentPage.meta, const BadgesComponentPage()),
         _entry(ButtonsComponentPage.meta, const ButtonsComponentPage()),
         _entry(CheckboxComponentPage.meta, const CheckboxComponentPage()),
@@ -61,7 +67,8 @@ abstract final class ComponentRegistry {
       ]..sort((a, b) {
         final groupOrder = a.group.index.compareTo(b.group.index);
         if (groupOrder != 0) return groupOrder;
-        if (a.group == ComponentLibraryGroup.theme) {
+        if (a.group == ComponentLibraryGroup.theme ||
+            a.group == ComponentLibraryGroup.effect) {
           return a.sortOrder.compareTo(b.sortOrder);
         }
         return a.title.compareTo(b.title);
@@ -70,6 +77,9 @@ abstract final class ComponentRegistry {
   static List<ComponentLibrarySection> get sections {
     final themePages = all
         .where((page) => page.group == ComponentLibraryGroup.theme)
+        .toList();
+    final effectPages = all
+        .where((page) => page.group == ComponentLibraryGroup.effect)
         .toList();
     final atomPages =
         all.where((page) => page.group == ComponentLibraryGroup.atom).toList()
@@ -83,6 +93,8 @@ abstract final class ComponentRegistry {
     return [
       if (themePages.isNotEmpty)
         ComponentLibrarySection(title: 'Theme', pages: themePages),
+      if (effectPages.isNotEmpty)
+        ComponentLibrarySection(title: 'Effect', pages: effectPages),
       if (atomPages.isNotEmpty)
         ComponentLibrarySection(title: 'Atom Components', pages: atomPages),
       ComponentLibrarySection(title: 'Layout Block', pages: layoutBlockPages),

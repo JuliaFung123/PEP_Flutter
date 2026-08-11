@@ -1,7 +1,7 @@
 import 'component_page_meta.dart';
 
 /// Library list grouping for component reference pages.
-enum ComponentLibraryGroup { theme, atom, layoutBlock }
+enum ComponentLibraryGroup { theme, effect, atom, layoutBlock }
 
 /// A titled section in the component library list.
 class ComponentLibrarySection {

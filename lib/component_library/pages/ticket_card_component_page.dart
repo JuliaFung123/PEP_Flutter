@@ -63,7 +63,17 @@ class TicketCardComponentPage extends StatelessWidget {
     ),
   ];
 
-  static const _pending = <PendingVariant>[];
+  static const _pending = <PendingVariant>[
+    PendingVariant(
+      name: 'Activity list row',
+      foundIn: 'Items List (ActivityListPage)',
+      description:
+          'Figma List/活動 — 140×128 thumb (radius 16), titleSmall max 3 lines, '
+          'location_on + calendar_today metadata (labelMedium).',
+      suggestedAction:
+          'Promote to Layout Block after review (or Cards page)',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
