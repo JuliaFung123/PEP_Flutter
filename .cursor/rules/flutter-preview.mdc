@@ -1,0 +1,42 @@
+---
+description: Always open/refresh Flutter Chrome preview after UI changes
+globs: lib/**/*.dart
+alwaysApply: true
+---
+
+# Flutter preview — open & refresh
+
+Preview: `tool/preview.ps1` → `flutter run -d chrome --web-port=7357` with **stdin attached**.
+
+**Important:** Flutter opens its **own** Chrome window (temp profile). That window is the real preview.
+
+Do **not** open `http://localhost:7357` in a normal Chrome / Chrome DevTools MCP tab — DWDS will fail and you get a **blank white page**.
+
+## After code edits — refresh, do NOT cold-start
+
+1. **If preview is already running** (port 7357 listening):  
+   Run `powershell -ExecutionPolicy Bypass -File tool/hot_restart.ps1`  
+   This writes **`R`** into the flutter run stdin (full hot restart, same Chrome window).
+
+2. **Confirm success:** look for `Hot restart requested (sent R to flutter PID …)` and/or Flutter log `Performing hot restart`.  
+   If the script falls back to WebSocket reassemble only, tell the user — some changes may need a full restart.
+
+3. **Do NOT** kill Chrome / Flutter / port 7357 to “refresh”.
+
+4. **Do NOT** re-run `tool/preview.ps1` while preview is up — it delegates to hot restart.
+
+5. **Only** run `tool/preview.ps1` when preview is **not** running (first open, or user quit with `q`).
+
+6. **Focus** the existing Flutter Chrome window (`PEP Flutter` / `pep_flutter`) — never open a second Chrome for preview.
+
+7. **After every UI edit the user should see**, run `hot_restart.ps1`. Never assume the preview updated without a successful restart.
+
+## First open
+
+1. `powershell -ExecutionPolicy Bypass -File tool/preview.ps1` (background; wait for “Flutter run key commands” / “Starting application” / “Saved VM URI”).
+2. Focus Flutter’s Chrome window.
+3. Leave the `flutter run` / `preview.ps1` terminal session running (it owns stdin).
+
+## When hot restart is not enough
+
+Full kill + `preview.ps1` only after: `pubspec.yaml` / plugin changes, broken session, disk-full compile failure, or user explicitly asks to restart preview.

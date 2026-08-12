@@ -32,40 +32,34 @@ class _TimeslotSelectionComponentPageState
     extends State<TimeslotSelectionComponentPage> {
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Date',
-      m3Behavior:
-          'Two-line option showing weekday and date for calendar-like selection.',
-      ourImplementation:
-          'Outlined or filled rounded card with stacked label and value.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Time',
-      m3Behavior: 'Single-line time slot with strong selected contrast.',
-      ourImplementation:
-          'Compact rounded option with centered label and inverse selected fill.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Color',
-      m3Behavior:
-          'Single-line option prefixed by a color swatch for categorized slots.',
-      ourImplementation: 'Time slot shell plus a 20x20 swatch block and label.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Text',
-      m3Behavior: 'Single-line named option without a leading swatch.',
-      ourImplementation: 'Time slot shell with text-only label.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Enabled interaction',
-      m3Behavior: 'Selectable slots toggle selected / unselected on tap.',
-      ourImplementation:
-          'Enabled column chips call `onPressed` to flip between '
-          '`TimeslotSelectionStatus.enabled` and `.selected`. Disabled is static.',
-      action: 'Use as-is',
+      topic: 'TimeslotSelectionChip',
+      spec:
+          'Radius 10; pad 12 (date py 8). Selected: inverseSurface / '
+          'onInverseSurface; else surface + outlineVariant. Date: bodySmall + '
+          'titleSmall. Time/Text/Color: minH 40, titleSmall w600. Swatch 20×20.',
+      setupCode: '''
+TimeslotSelectionChip.date(
+  day: 'Mon',
+  date: '3/12',
+  status: TimeslotSelectionStatus.selected,
+  onPressed: () {},
+)
+TimeslotSelectionChip.time(
+  label: '10:00',
+  status: TimeslotSelectionStatus.enabled,
+  onPressed: () {},
+)
+TimeslotSelectionChip.color(
+  label: 'Zone A',
+  swatchColor: Color(0xFF4CAF50),
+  status: TimeslotSelectionStatus.enabled,
+  onPressed: () {},
+)
+TimeslotSelectionChip.text(
+  label: 'Morning',
+  status: TimeslotSelectionStatus.disabled,
+)
+''',
     ),
   ];
 

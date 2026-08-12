@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../../component_library/widgets/image_header_widget.dart';
 import '../../../component_library/widgets/image_source.dart';
-import '../../../component_library/widgets/kpi_button_styles.dart';
+import '../../../component_library/widgets/pep_button_styles.dart';
 import '../../../component_library/widgets/scroll_nav.dart';
 import '../../../component_library/widgets/ticket_card.dart';
 import '../../../component_library/widgets/timeslot_selection_chip.dart';
@@ -324,18 +324,16 @@ class _TicketSectionState extends State<_TicketSection> {
             Expanded(
               child: Text(
                 '日期',
-                style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: textTheme.titleMedium,
               ),
             ),
             TextButton.icon(
               onPressed: () {},
-              style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+              style: PepButtonStyles.labelStyle(context, PepButtonSize.s40),
               iconAlignment: IconAlignment.end,
               icon: Icon(
                 Icons.keyboard_arrow_right,
-                size: KpiButtonSize.s40.trailingIconSize,
+                size: PepButtonSize.s40.trailingIconSize,
               ),
               label: const Text('More'),
             ),
@@ -423,7 +421,7 @@ class _StorySection extends StatelessWidget {
       children: [
         Text(
           '圖文RichText',
-          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: textTheme.titleMedium,
         ),
         const SizedBox(height: 16),
         Text(
@@ -445,7 +443,7 @@ class _StorySection extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           '【關於流冰】',
-          style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+          style: textTheme.titleSmall,
         ),
         const SizedBox(height: 8),
         Text(
@@ -481,7 +479,7 @@ class _AdditionalInfoSection extends StatelessWidget {
       children: [
         Text(
           'pep_activity_z一大堆',
-          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: textTheme.titleMedium,
         ),
         const SizedBox(height: 16),
         for (var i = 1; i <= 8; i++) ...[

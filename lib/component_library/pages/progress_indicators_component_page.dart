@@ -20,28 +20,16 @@ class ProgressIndicatorsComponentPage extends StatelessWidget {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Linear determinate',
-      m3Behavior: 'Shows known progress along a track.',
-      ourImplementation: 'LinearProgressIndicator with value.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Linear indeterminate',
-      m3Behavior: 'Shows ongoing activity with unknown duration.',
-      ourImplementation: 'LinearProgressIndicator without value.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Circular determinate',
-      m3Behavior: 'Circular indicator with known progress.',
-      ourImplementation: 'CircularProgressIndicator with value.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Circular indeterminate',
-      m3Behavior: 'Circular indicator for ongoing activity.',
-      ourImplementation: 'CircularProgressIndicator without value.',
-      action: 'Use as-is',
+      topic: 'progressIndicatorTheme',
+      spec:
+          'AppTheme does not override — ColorScheme.primary track. '
+          'Linear/Circular; determinate (value) or indeterminate.',
+      setupCode: '''
+LinearProgressIndicator(value: 0.6)
+LinearProgressIndicator() // indeterminate
+CircularProgressIndicator(value: 0.6)
+CircularProgressIndicator()
+''',
     ),
   ];
 

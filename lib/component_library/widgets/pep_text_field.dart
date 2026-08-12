@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../core/theme/kpi_input_decoration_theme.dart';
+import '../../core/theme/pep_input_decoration_theme.dart';
 
-/// KPI outlined text field — surface fill plus full outline, optional external label.
+/// PEP outlined text field — surface fill plus full outline, optional external label.
 ///
-/// Decoration tokens come from [KpiInputDecorationTheme] on [ThemeData.extensions].
+/// Decoration tokens come from [PepInputDecorationTheme] on [ThemeData.extensions].
 /// The label sits above the field instead of floating inside. Subtext follows M3:
 /// [helperText] on normal states, [errorText] replaces it in error.
-enum KpiTextFieldStatus { normal, error }
+enum PepTextFieldStatus { normal, error }
 
-class KpiTextField extends StatefulWidget {
-  const KpiTextField({
+class PepTextField extends StatefulWidget {
+  const PepTextField({
     super.key,
     this.label = 'Label',
     this.showExternalLabel = true,
@@ -19,7 +19,7 @@ class KpiTextField extends StatefulWidget {
     this.hintText = 'Placeholder',
     this.helperText = 'Helper text',
     this.errorText = 'Error message',
-    this.status = KpiTextFieldStatus.normal,
+    this.status = PepTextFieldStatus.normal,
     this.required = false,
     this.enabled = true,
     this.showHelperText = true,
@@ -40,7 +40,7 @@ class KpiTextField extends StatefulWidget {
   final String? hintText;
   final String? helperText;
   final String? errorText;
-  final KpiTextFieldStatus status;
+  final PepTextFieldStatus status;
   final bool required;
   final bool enabled;
   /// Controls [helperText] only. [errorText] is shown separately when in error state.
@@ -56,12 +56,12 @@ class KpiTextField extends StatefulWidget {
   final TextInputType? keyboardType;
 
   @override
-  State<KpiTextField> createState() => _KpiTextFieldState();
+  State<PepTextField> createState() => _PepTextFieldState();
 }
 
-/// Leading color swatch for KPI fields — 24dp circle centered in the 48dp icon slot.
-class KpiColorSwatchPrefix extends StatelessWidget {
-  const KpiColorSwatchPrefix({super.key, required this.color});
+/// Leading color swatch for PEP fields — 24dp circle centered in the 48dp icon slot.
+class PepColorSwatchPrefix extends StatelessWidget {
+  const PepColorSwatchPrefix({super.key, required this.color});
 
   final Color color;
 
@@ -83,12 +83,12 @@ class KpiColorSwatchPrefix extends StatelessWidget {
   }
 }
 
-class _KpiTextFieldState extends State<KpiTextField> {
+class _PepTextFieldState extends State<PepTextField> {
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
   late bool _ownsController;
 
-  bool get _isError => widget.status == KpiTextFieldStatus.error;
+  bool get _isError => widget.status == PepTextFieldStatus.error;
 
   @override
   void initState() {
@@ -100,7 +100,7 @@ class _KpiTextFieldState extends State<KpiTextField> {
   }
 
   @override
-  void didUpdateWidget(KpiTextField oldWidget) {
+  void didUpdateWidget(PepTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       _controller.removeListener(_onTextChange);
@@ -162,7 +162,7 @@ class _KpiTextFieldState extends State<KpiTextField> {
       suffixIconColor: enabledBlank ? mutedColor : null,
     );
 
-    return decoration.applyDefaults(KpiInputDecorationTheme.of(context));
+    return decoration.applyDefaults(PepInputDecorationTheme.of(context));
   }
 
   @override

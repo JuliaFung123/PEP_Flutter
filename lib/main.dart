@@ -11,5 +11,5 @@ Future<void> main() async {
   await AppFonts.preload();
   await LiquidGlassWidgets.initialize();
 
-  runApp(LiquidGlassWidgets.wrap(child: const KpiApp()));
+  runApp(LiquidGlassWidgets.wrap(child: const PepApp()));
 }

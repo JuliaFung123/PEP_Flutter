@@ -28,22 +28,23 @@ class _SwitchComponentPageState extends State<SwitchComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Switch',
-      m3Behavior: 'Standard switch toggles a setting between on and off.',
-      ourImplementation: 'Flutter Switch with M3 theme.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Switch with icon',
-      m3Behavior: 'Switch displays icons for on and off states in the thumb.',
-      ourImplementation: 'Switch with thumbIcon WidgetStateProperty.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Switch with label',
-      m3Behavior: 'M3 pairs switch with a text label (layout pattern).',
-      ourImplementation: 'Row with Text + Switch — not a switch variant.',
-      action: 'Layout pattern',
+      topic: 'switchTheme',
+      spec:
+          'AppTheme does not override — ColorScheme primary / outline. '
+          'Optional thumbIcon; pair with Text in a Row for labeled layout.',
+      setupCode: '''
+Switch(value: on, onChanged: (v) {})
+Switch(
+  value: on,
+  thumbIcon: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) {
+      return const Icon(Icons.check);
+    }
+    return const Icon(Icons.close);
+  }),
+  onChanged: (v) {},
+)
+''',
     ),
   ];
 

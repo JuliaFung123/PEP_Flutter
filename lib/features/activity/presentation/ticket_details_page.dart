@@ -9,7 +9,7 @@ import '../../../component_library/pages/app_bars_component_page.dart'
         kM3MediumFlexibleHeight,
         kM3ToolbarHeight;
 import '../../../component_library/widgets/buy_quantity.dart';
-import '../../../component_library/widgets/kpi_button_styles.dart';
+import '../../../component_library/widgets/pep_button_styles.dart';
 import '../../../component_library/widgets/ticket_card.dart';
 import '../../../component_library/widgets/timeslot_selection_chip.dart';
 import '../../../core/theme/app_typography.dart';
@@ -234,14 +234,14 @@ class _TicketDetailsPageState extends State<TicketDetailsPage> {
                               ),
                               TextButton.icon(
                                 onPressed: () {},
-                                style: KpiButtonStyles.labelStyle(
+                                style: PepButtonStyles.labelStyle(
                                   context,
-                                  KpiButtonSize.xs32,
+                                  PepButtonSize.xs32,
                                 ),
                                 iconAlignment: IconAlignment.end,
                                 icon: Icon(
                                   Icons.arrow_drop_down,
-                                  size: KpiButtonSize.xs32.trailingIconSize,
+                                  size: PepButtonSize.xs32.trailingIconSize,
                                 ),
                                 label: const Text('More'),
                               ),

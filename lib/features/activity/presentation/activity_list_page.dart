@@ -7,15 +7,19 @@ import '../../../component_library/pages/app_bars_component_page.dart'
         kM3AppBarLeadingWidth,
         kM3AppBarTitleGap,
         kM3ToolbarHeight;
-import '../../../component_library/widgets/image_source.dart';
-import '../../../component_library/widgets/kpi_carousel.dart';
+import '../../../component_library/widgets/act_list_item.dart';
+import '../../../component_library/widgets/pep_carousel.dart';
 import '../../../core/theme/app_typography.dart';
 import 'activity_page.dart';
 
 /// Activity catalog — Figma:
 /// https://www.figma.com/design/61SERD0hYvuj7BrwBRv210/PEP_APP-2?node-id=40-1643
 ///
-/// First 活動 page: featured [KpiCarousel] + list. Tap → [ActivityPage].
+/// First 活動 page:
+/// - Featured strip: library Atom → Carousel Hero
+///   (`PepCarouselFeaturedBox` + `PepCarousel` + `PepCarouselFeaturedCard`)
+/// - List rows: library Layout Block → Act. List (`ActListItem`)
+/// Tap → [ActivityPage].
 class ActivityListPage extends StatelessWidget {
   const ActivityListPage({super.key});
 
@@ -23,19 +27,16 @@ class ActivityListPage extends StatelessWidget {
 
   static const _featured = <_FeaturedItem>[
     _FeaturedItem(
-      image: 'assets/images/demo/demo_header_1.png',
+      // Bottom band reads light → dark caption ink (strawberry demo).
+      image: 'assets/images/demo/demo_header_5.png',
       dateBadge: 'Dec 2 - Dec 20',
       title: '聖誕Party將於24日下午1點開始',
     ),
     _FeaturedItem(
-      image: 'assets/images/demo/demo_header_2.png',
-      dateBadge: 'Dec 14 - Dec 24',
-      title: '聖誕Party將於24日下午1點開始',
-    ),
-    _FeaturedItem(
-      image: 'assets/images/demo/demo_header_3.png',
-      dateBadge: 'Dec 1 - Dec 31',
-      title: '冬季限定活動開放報名中',
+      // Bottom band reads dark → light caption ink.
+      image: 'assets/images/demo/demo_header_4.png',
+      dateBadge: 'Jan 5 - Jan 12',
+      title: '新年市集週末限定開幕',
     ),
   ];
 
@@ -121,14 +122,13 @@ class ActivityListPage extends StatelessWidget {
       body: ListView(
         children: [
           const SizedBox(height: 8),
-          SizedBox(
-            height: kKpiCarouselFeaturedHeight,
-            child: KpiCarousel(
-              layout: KpiCarouselLayout.hero,
+          PepCarouselFeaturedBox(
+            child: PepCarousel(
+              layout: PepCarouselLayout.hero,
               onTap: (_) => _openDetail(context),
               children: [
                 for (final item in _featured)
-                  KpiCarouselFeaturedCard(
+                  PepCarouselFeaturedCard(
                     image: item.image,
                     dateBadge: item.dateBadge,
                     title: item.title,
@@ -137,18 +137,17 @@ class ActivityListPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                for (var i = 0; i < _list.length; i++) ...[
-                  _ActivityListRow(
-                    item: _list[i],
-                    onTap: () => _openDetail(context),
-                  ),
-                ],
-              ],
-            ),
+          Column(
+            children: [
+              for (final item in _list)
+                ActListItem(
+                  image: item.image,
+                  title: item.title,
+                  location: item.location,
+                  dateRange: item.dateRange,
+                  onTap: () => _openDetail(context),
+                ),
+            ],
           ),
           const SizedBox(height: 24),
         ],
@@ -181,101 +180,4 @@ class _ListItem {
   final String title;
   final String location;
   final String dateRange;
-}
-
-/// Temporary stand-in for Figma `List/活動` — pending library review.
-class _ActivityListRow extends StatelessWidget {
-  const _ActivityListRow({required this.item, required this.onTap});
-
-  final _ListItem item;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Material(
-      color: colorScheme.surface,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: SizedBox(
-                  width: 140,
-                  height: 128,
-                  child: buildImageSource(item.image, fit: BoxFit.cover),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.title,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: textTheme.titleSmall?.copyWith(
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            size: 16,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              item.location,
-                              style: textTheme.labelMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            size: 16,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              item.dateRange,
-                              style: textTheme.labelMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

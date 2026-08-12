@@ -201,7 +201,6 @@ class _PriceRow extends StatelessWidget {
             '${price.currencyLabel} ',
             style: textTheme.titleSmall?.copyWith(
               color: subColor,
-              fontWeight: FontWeight.w600,
             ),
           ),
           TicketCardPriceType.token => Padding(
@@ -234,7 +233,6 @@ class _PriceRow extends StatelessWidget {
           price.fromSuffix,
           style: textTheme.labelMedium?.copyWith(
             color: subColor,
-            fontWeight: FontWeight.w600,
           ),
         ),
       ],

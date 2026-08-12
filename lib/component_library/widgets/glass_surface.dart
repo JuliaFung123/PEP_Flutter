@@ -8,11 +8,11 @@ const double kGlassSurfaceBlurSigma = 16;
 /// Default corner radius for [GlassSurface] cards / panels.
 const double kGlassSurfaceRadius = 16;
 
-/// Normal glass tint opacity (20%).
-const double kGlassSurfaceTintOpacity = 0.20;
+/// Normal glass tint opacity (10%).
+const double kGlassSurfaceTintOpacity = 0.10;
 
-/// Strong glass tint opacity (40%).
-const double kGlassSurfaceTintOpacityStrong = 0.40;
+/// Strong glass tint opacity (20%).
+const double kGlassSurfaceTintOpacityStrong = 0.20;
 
 /// Frosted-glass panel — optional blur of content behind + translucent tint
 /// or gradient fill.
@@ -46,7 +46,7 @@ class GlassSurface extends StatelessWidget {
   final BorderRadiusGeometry borderRadius;
 
   /// Solid fill over the blur. Ignored when [gradient] is set.
-  /// Defaults to [ColorScheme.surface] at [kGlassSurfaceTintOpacity] (20%).
+  /// Defaults to [ColorScheme.surface] at [kGlassSurfaceTintOpacity] (10%).
   final Color? tint;
 
   /// When set, used instead of [tint] (e.g. bottom caption fade).
@@ -102,7 +102,7 @@ class GlassSurface extends StatelessWidget {
   }
 }
 
-/// [ColorScheme.surface] tint at normal (20%) or strong (40%) opacity.
+/// [ColorScheme.surface] tint at normal (10%) or strong (20%) opacity.
 Color glassSurfaceTint(ColorScheme colorScheme, {bool strong = false}) {
   return colorScheme.surface.withValues(
     alpha: strong
@@ -113,7 +113,7 @@ Color glassSurfaceTint(ColorScheme colorScheme, {bool strong = false}) {
 
 /// Vertical clear → glass tint for captions over media.
 ///
-/// Ends at normal (20%) or strong (40%) opacity. Pair with [GlassSurface] blur.
+/// Ends at normal (10%) or strong (20%) opacity. Pair with [GlassSurface] blur.
 Gradient glassBottomCaptionGradient(
   ColorScheme colorScheme, {
   bool strong = false,

@@ -1,9 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'kpi_button_styles.dart';
-import 'kpi_text_field.dart';
+import 'pep_button_styles.dart';
+import 'pep_text_field.dart';
 import 'm3_date_picker.dart';
+
+/// Opens a bottom-docked date range picker sheet and returns the chosen range.
+Future<DateTimeRange?> showDockedDateRangePicker(
+  BuildContext context, {
+  DateTimeRange? initialDateRange,
+  required DateTime firstDate,
+  required DateTime lastDate,
+}) {
+  return showModalBottomSheet<DateTimeRange>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    showDragHandle: true,
+    builder: (sheetContext) {
+      final bottomInset = MediaQuery.viewInsetsOf(sheetContext).bottom;
+
+      return Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, bottomInset + 16),
+        child: DateRangePickerDialog(
+          initialDateRange: initialDateRange,
+          firstDate: firstDate,
+          lastDate: lastDate,
+          initialEntryMode: DatePickerEntryMode.calendarOnly,
+          helpText: 'Select date range',
+          cancelText: 'Cancel',
+          confirmText: 'Done',
+        ),
+      );
+    },
+  );
+}
 
 /// Opens a bottom-docked date picker sheet and returns the chosen date.
 Future<DateTime?> showDockedDatePicker(
@@ -42,9 +73,9 @@ Future<DateTime?> showDockedDatePicker(
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(sheetContext).pop(),
-                        style: KpiButtonStyles.labelStyle(
+                        style: PepButtonStyles.labelStyle(
                           sheetContext,
-                          KpiButtonSize.s40,
+                          PepButtonSize.s40,
                         ),
                         child: const Text('Cancel'),
                       ),
@@ -53,9 +84,9 @@ Future<DateTime?> showDockedDatePicker(
                     Expanded(
                       child: FilledButton(
                         onPressed: () => Navigator.of(sheetContext).pop(date),
-                        style: KpiButtonStyles.labelStyle(
+                        style: PepButtonStyles.labelStyle(
                           sheetContext,
-                          KpiButtonSize.s40,
+                          PepButtonSize.s40,
                         ),
                         child: const Text('Done'),
                       ),
@@ -71,7 +102,7 @@ Future<DateTime?> showDockedDatePicker(
   );
 }
 
-/// KPI text field for dates — type directly or open docked picker from trailing icon.
+/// PEP text field for dates — type directly or open docked picker from trailing icon.
 class DatePickerInputField extends StatefulWidget {
   const DatePickerInputField({
     super.key,
@@ -177,7 +208,7 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return KpiTextField(
+    return PepTextField(
       showExternalLabel: false,
       showHelperText: false,
       hintText: 'MM/DD/YYYY',
@@ -186,7 +217,7 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
       prefixIcon: const Icon(Icons.calendar_today_outlined),
       suffixIcon: IconButton(
         icon: const Icon(Icons.calendar_month_outlined),
-        style: KpiButtonStyles.iconStyle(KpiButtonSize.s40),
+        style: PepButtonStyles.iconStyle(PepButtonSize.s40),
         onPressed: widget.enabled ? () => _open(context) : null,
       ),
       keyboardType: TextInputType.datetime,
@@ -200,6 +231,117 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
       },
       onSubmitted: _applyDate,
       onEditingComplete: () => _editingText = false,
+    );
+  }
+}
+
+/// PEP text field for date ranges — tap to open docked range picker.
+class DateRangePickerInputField extends StatefulWidget {
+  const DateRangePickerInputField({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.enabled = true,
+    this.firstDate,
+    this.lastDate,
+  });
+
+  final DateTimeRange value;
+  final ValueChanged<DateTimeRange> onChanged;
+  final bool enabled;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
+
+  @override
+  State<DateRangePickerInputField> createState() =>
+      _DateRangePickerInputFieldState();
+}
+
+class _DateRangePickerInputFieldState extends State<DateRangePickerInputField> {
+  late final TextEditingController _controller;
+
+  DateTime get _firstDate => widget.firstDate ?? DateTime(1900);
+  DateTime get _lastDate => widget.lastDate ?? DateTime(2100);
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: _displayRange(widget.value));
+  }
+
+  @override
+  void didUpdateWidget(DateRangePickerInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final text = _displayRange(widget.value);
+    if (_controller.text != text) {
+      _controller.text = text;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  static String _displayDate(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '$month/$day/${date.year}';
+  }
+
+  static String _displayRange(DateTimeRange range) =>
+      '${_displayDate(range.start)} – ${_displayDate(range.end)}';
+
+  DateTimeRange _clampRange(DateTimeRange range) {
+    final start = DateTime(
+      range.start.year,
+      range.start.month,
+      range.start.day,
+    );
+    final end = DateTime(range.end.year, range.end.month, range.end.day);
+    final first = DateTime(_firstDate.year, _firstDate.month, _firstDate.day);
+    final last = DateTime(_lastDate.year, _lastDate.month, _lastDate.day);
+
+    var clampedStart = start.isBefore(first) ? first : start;
+    clampedStart = clampedStart.isAfter(last) ? last : clampedStart;
+    var clampedEnd = end.isAfter(last) ? last : end;
+    clampedEnd = clampedEnd.isBefore(first) ? first : clampedEnd;
+    if (clampedEnd.isBefore(clampedStart)) {
+      clampedEnd = clampedStart;
+    }
+    return DateTimeRange(start: clampedStart, end: clampedEnd);
+  }
+
+  Future<void> _open(BuildContext context) async {
+    final initial = _clampRange(widget.value);
+    final picked = await showDockedDateRangePicker(
+      context,
+      initialDateRange: initial,
+      firstDate: _firstDate,
+      lastDate: _lastDate,
+    );
+    if (picked != null) {
+      widget.onChanged(_clampRange(picked));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PepTextField(
+      showExternalLabel: false,
+      showHelperText: false,
+      hintText: 'MM/DD/YYYY – MM/DD/YYYY',
+      controller: _controller,
+      enabled: widget.enabled,
+      readOnly: true,
+      prefixIcon: const Icon(Icons.date_range_outlined),
+      suffixIcon: IconButton(
+        icon: const Icon(Icons.calendar_month_outlined),
+        style: PepButtonStyles.iconStyle(PepButtonSize.s40),
+        onPressed: widget.enabled ? () => _open(context) : null,
+      ),
+      onTap: widget.enabled ? () => _open(context) : null,
     );
   }
 }

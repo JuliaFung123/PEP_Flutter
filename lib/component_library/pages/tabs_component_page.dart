@@ -33,68 +33,20 @@ class _TabsComponentPageState extends State<TabsComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Primary',
-      m3Behavior: 'Prominent top-level section switcher with active indicator.',
-      ourImplementation: 'Use `TabBar` with the default primary styling.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Secondary',
-      m3Behavior: 'Lower-emphasis tabs nested under another context.',
-      ourImplementation: 'Use `TabBar.secondary` for subordinate navigation.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Scrollable',
-      m3Behavior: 'Allows more tabs than fit the available width.',
-      ourImplementation: 'Use `TabBar` with `isScrollable: true`.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Vertical',
-      m3Behavior:
-          'Icon stacked above label (Figma Style=Vertical) — height 64, '
-          'icon 24, gap 4, bottom indicator.',
-      ourImplementation:
-          '`Tab` with column layout (icon over label). Always shows icon; '
-          'badge overlays the icon (top-right) when Badge is on. '
-          'Figma: Flutter UI Material 3 Tab node 2110:2592.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Typography',
-      m3Behavior: 'Tab labels use Label Large (14 / Medium / 20).',
-      ourImplementation:
-          '`textTheme.labelLarge` for all tab labels (horizontal + vertical). '
-          'Badge count uses `labelSmall` (11 / Medium / 16).',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Selected color',
-      m3Behavior: 'Active tab uses primary for indicator and content.',
-      ourImplementation:
-          'Selected label + icon use `colorScheme.primary`; unselected use '
-          '`onSurfaceVariant`.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Badge',
-      m3Behavior:
-          'Figma Tab badge: horizontal inline after label; vertical on icon. '
-          'Selected primary/onPrimary; unselected inverseSurface/'
-          'onInverseSurface; disabled onSurface/onPrimary.',
-      ourImplementation:
-          'Toggle “Badge”. Horizontal: pill after title (gap 4). Vertical: '
-          '`Badge` on the 24px icon. Colors follow Figma Tab node 2110:2592.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Disabled tab',
-      m3Behavior: 'Individual tabs can be non-interactive.',
-      ourImplementation:
-          'Last tab (“More”) is disabled in each preview '
-          '(dimmed, taps ignored).',
-      action: 'Use as-is',
+      topic: 'tabBarTheme',
+      spec:
+          'AppTheme does not override. labelLarge; selected primary; '
+          'unselected onSurfaceVariant. Vertical: height 64, icon 24, gap 4.',
+      setupCode: '''
+TabBar(
+  tabs: [
+    Tab(text: 'One'),
+    Tab(icon: Icon(Icons.star), text: 'Two'), // vertical style
+  ],
+)
+TabBar.secondary(tabs: [...])
+TabBar(isScrollable: true, tabs: [...])
+''',
     ),
   ];
 

@@ -4,7 +4,7 @@ import '../models/component_note.dart';
 import '../models/component_page_meta_data.dart';
 import '../models/pending_variant.dart';
 import '../widgets/component_page_scaffold.dart';
-import '../widgets/kpi_button_styles.dart';
+import '../widgets/pep_button_styles.dart';
 import '../widgets/variant_matrix_table.dart';
 
 /// Buttons from Figma Flutter UI kit (3 sizes × modes × label/icon).
@@ -21,7 +21,7 @@ class ButtonsComponentPage extends StatefulWidget {
     description:
         'Standard M3 buttons (Filled / Outlined / Tonal / Text + IconButton) '
         'with a small size scale from the Flutter UI kit: XS 32, S 40, M 56. '
-        'Use Flutter Material widgets; apply `KpiButtonStyles` only when you '
+        'Use Flutter Material widgets; apply `PepButtonStyles` only when you '
         'need a non-default size.',
   );
 
@@ -35,39 +35,61 @@ class _ButtonsComponentPageState extends State<ButtonsComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'M3 buttons',
-      m3Behavior:
-          'Filled, Outlined, Tonal, Text, IconButton — ColorScheme, states, '
-          'icons, and shapes are Material 3.',
-      ourImplementation:
-          'Same Flutter Material widgets. Theme default height is S 40. '
-          'This page is a size reference, not a custom button component.',
-      action: 'Use as-is',
+      topic: 'filledButtonTheme / elevated / outlined / text / icon',
+      spec:
+          'Default S 40: min height 40, pad 16, labelLarge, StadiumBorder. '
+          'IconButton fixed 40×40, iconSize 20. Colors from ColorScheme.',
+      setupCode: '''
+filledButtonTheme: FilledButtonThemeData(
+  style: FilledButton.styleFrom(
+    backgroundColor: colorScheme.primary,
+    foregroundColor: colorScheme.onPrimary,
+    minimumSize: const Size(0, 40),
+    maximumSize: const Size(double.infinity, 40),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    textStyle: textTheme.labelLarge,
+    shape: const StadiumBorder(),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    visualDensity: VisualDensity.standard,
+  ),
+),
+// elevated / outlined / text: same S 40 geometry
+// iconButtonTheme: Size(40, 40), iconSize 20
+''',
     ),
     ComponentNote(
-      variant: 'Size tokens (only delta)',
-      m3Behavior: 'Stock Flutter buttons are typically ~40 tall / Label Large.',
-      ourImplementation:
-          'Kit sizes via `KpiButtonStyles`: XS 32 (pad 12), S 40 (pad 16), '
-          'M 56 (pad 24, `titleLarge`). Use `VisualDensity.standard` so '
-          'heights stay exact (compact shrinks by 8px).',
-      action: 'Use as-is',
+      topic: 'PepButtonStyles',
+      spec:
+          'XS 32 (pad 12, labelLarge), S 40 (pad 16, labelLarge), '
+          'M 56 (pad 24, titleLarge). Use VisualDensity.standard.',
+      setupCode: '''
+FilledButton(
+  style: PepButtonStyles.labelStyle(context, PepButtonSize.xs32),
+  onPressed: () {},
+  child: const Text('XS'),
+)
+IconButton(
+  style: PepButtonStyles.iconStyle(PepButtonSize.m56),
+  onPressed: () {},
+  icon: const Icon(Icons.add),
+)
+''',
     ),
   ];
 
   static const _pending = <PendingVariant>[];
 
   static const _modes = <_ModeSpec>[
-    _ModeSpec(KpiButtonMode.filled, 'Filled'),
-    _ModeSpec(KpiButtonMode.outlined, 'Outlined'),
-    _ModeSpec(KpiButtonMode.tonal, 'Tonal'),
-    _ModeSpec(KpiButtonMode.text, 'Text'),
+    _ModeSpec(PepButtonMode.filled, 'Filled'),
+    _ModeSpec(PepButtonMode.outlined, 'Outlined'),
+    _ModeSpec(PepButtonMode.tonal, 'Tonal'),
+    _ModeSpec(PepButtonMode.text, 'Text'),
   ];
 
   static const _sizes = [
-    KpiButtonSize.xs32,
-    KpiButtonSize.s40,
-    KpiButtonSize.m56,
+    PepButtonSize.xs32,
+    PepButtonSize.s40,
+    PepButtonSize.m56,
   ];
 
   @override
@@ -177,7 +199,7 @@ class _ButtonsComponentPageState extends State<ButtonsComponentPage> {
 
 class _ModeSpec {
   const _ModeSpec(this.mode, this.label);
-  final KpiButtonMode mode;
+  final PepButtonMode mode;
   final String label;
 }
 
@@ -249,8 +271,8 @@ class _LabelButtonPreview extends StatelessWidget {
     required this.showTrailingIcon,
   });
 
-  final KpiButtonMode mode;
-  final KpiButtonSize size;
+  final PepButtonMode mode;
+  final PepButtonSize size;
   final bool enabled;
   final bool showLeadingIcon;
   final bool showTrailingIcon;
@@ -287,26 +309,26 @@ class _LabelButtonPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onPressed = enabled ? () {} : null;
-    final style = KpiButtonStyles.labelStyle(context, size);
+    final style = PepButtonStyles.labelStyle(context, size);
     final child = _child();
 
     return switch (mode) {
-      KpiButtonMode.filled => FilledButton(
+      PepButtonMode.filled => FilledButton(
         onPressed: onPressed,
         style: style,
         child: child,
       ),
-      KpiButtonMode.outlined => OutlinedButton(
+      PepButtonMode.outlined => OutlinedButton(
         onPressed: onPressed,
         style: style,
         child: child,
       ),
-      KpiButtonMode.tonal => FilledButton.tonal(
+      PepButtonMode.tonal => FilledButton.tonal(
         onPressed: onPressed,
         style: style,
         child: child,
       ),
-      KpiButtonMode.text => TextButton(
+      PepButtonMode.text => TextButton(
         onPressed: onPressed,
         style: style,
         child: child,
@@ -322,33 +344,33 @@ class _IconButtonPreview extends StatelessWidget {
     required this.enabled,
   });
 
-  final KpiButtonMode mode;
-  final KpiButtonSize size;
+  final PepButtonMode mode;
+  final PepButtonSize size;
   final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     final onPressed = enabled ? () {} : null;
-    final style = KpiButtonStyles.iconStyle(size);
+    final style = PepButtonStyles.iconStyle(size);
     const icon = Icon(Icons.close);
 
     return switch (mode) {
-      KpiButtonMode.filled => IconButton.filled(
+      PepButtonMode.filled => IconButton.filled(
         onPressed: onPressed,
         style: style,
         icon: icon,
       ),
-      KpiButtonMode.outlined => IconButton.outlined(
+      PepButtonMode.outlined => IconButton.outlined(
         onPressed: onPressed,
         style: style,
         icon: icon,
       ),
-      KpiButtonMode.tonal => IconButton.filledTonal(
+      PepButtonMode.tonal => IconButton.filledTonal(
         onPressed: onPressed,
         style: style,
         icon: icon,
       ),
-      KpiButtonMode.text => IconButton(
+      PepButtonMode.text => IconButton(
         onPressed: onPressed,
         style: style,
         icon: icon,

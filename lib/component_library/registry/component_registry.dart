@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../models/component_page_meta.dart';
 import '../models/component_library_group.dart';
 import '../models/component_page_meta_data.dart';
+import '../pages/act_list_component_page.dart';
 import '../pages/app_bars_component_page.dart';
+import '../pages/avatar_component_page.dart';
 import '../pages/badges_component_page.dart';
 import '../pages/buttons_component_page.dart';
 import '../pages/buy_quantity_component_page.dart';
@@ -54,10 +56,12 @@ abstract final class ComponentRegistry {
           TimeslotSelectionComponentPage.meta,
           const TimeslotSelectionComponentPage(),
         ),
+        _entry(ActListComponentPage.meta, const ActListComponentPage()),
         _entry(TicketCardComponentPage.meta, const TicketCardComponentPage()),
         _entry(BuyQuantityComponentPage.meta, const BuyQuantityComponentPage()),
         _entry(CarouselComponentPage.meta, const CarouselComponentPage()),
         _entry(BadgesComponentPage.meta, const BadgesComponentPage()),
+        _entry(AvatarComponentPage.meta, const AvatarComponentPage()),
         _entry(ButtonsComponentPage.meta, const ButtonsComponentPage()),
         _entry(CheckboxComponentPage.meta, const CheckboxComponentPage()),
         _entry(ChipsComponentPage.meta, const ChipsComponentPage()),

@@ -5,13 +5,19 @@ import 'package:flutter/material.dart';
 
 import 'image_header_gallery_page.dart';
 import 'image_source.dart';
-import 'kpi_button_styles.dart';
+import 'pep_button_styles.dart';
 
-/// Target aspect (width ÷ height). Used until [kImageHeaderMaxHeight] would be exceeded.
+/// Target aspect (width ÷ height = 4 ÷ 3). Used until [kImageHeaderMaxHeight]
+/// would be exceeded.
 const kImageHeaderAspectRatio = 4 / 3;
+
+/// Hard-coded max height in **logical pixels (dp)** — Flutter’s density-
+/// independent unit (not raw screen px). Same cap used by featured carousels.
 const kImageHeaderMaxHeight = 320.0;
 
-/// Full-width block; height = min(width ÷ 4:3, 320).
+/// Full-width block; height = min(availableWidth / (4/3), 320 dp).
+///
+/// Example: width 360 → height 270; width 480+ → height capped at 320.
 ({double width, double height}) resolveImageHeaderSize({
   required double availableWidth,
 }) {
@@ -256,9 +262,9 @@ class _ImageHeaderWidgetState extends State<ImageHeaderWidget> {
               bottom: 16,
               child: FilledButton.tonal(
                 onPressed: _openGallery,
-                style: KpiButtonStyles.labelStyle(
+                style: PepButtonStyles.labelStyle(
                   context,
-                  KpiButtonSize.xs32,
+                  PepButtonSize.xs32,
                 ).copyWith(
                   backgroundColor: WidgetStatePropertyAll(
                     colorScheme.inverseSurface,

@@ -1,6 +1,6 @@
-# KPI Flutter
+# PEP Flutter
 
-Flutter app scaffold with **Material Design 3** (M3), ready for KPI dashboard development.
+Flutter app scaffold with **Material Design 3** (M3), ready for PEP development.
 
 ## Environment
 
@@ -15,7 +15,7 @@ Flutter has been added to your **user PATH**. Open a **new terminal** if `flutte
 ## Quick start
 
 ```bash
-cd C:\Users\hp\Desktop\KPI_Flutter
+cd C:\Users\hp\Desktop\PEP_Flutter
 flutter pub get
 flutter run -d chrome
 ```

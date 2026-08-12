@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'kpi_button_styles.dart';
-import 'kpi_text_field.dart';
+import 'pep_button_styles.dart';
+import 'pep_text_field.dart';
 import 'm3_color_picker.dart';
 
 /// Opens a bottom-docked color picker sheet and returns the chosen color.
@@ -38,9 +38,9 @@ Future<Color?> showDockedColorPicker(
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(sheetContext).pop(),
-                        style: KpiButtonStyles.labelStyle(
+                        style: PepButtonStyles.labelStyle(
                           sheetContext,
-                          KpiButtonSize.s40,
+                          PepButtonSize.s40,
                         ),
                         child: const Text('Cancel'),
                       ),
@@ -49,9 +49,9 @@ Future<Color?> showDockedColorPicker(
                     Expanded(
                       child: FilledButton(
                         onPressed: () => Navigator.of(sheetContext).pop(color),
-                        style: KpiButtonStyles.labelStyle(
+                        style: PepButtonStyles.labelStyle(
                           sheetContext,
-                          KpiButtonSize.s40,
+                          PepButtonSize.s40,
                         ),
                         child: const Text('Done'),
                       ),
@@ -145,16 +145,16 @@ class _ColorPickerInputFieldState extends State<ColorPickerInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return KpiTextField(
+    return PepTextField(
       showExternalLabel: false,
       showHelperText: false,
       hintText: '',
       controller: _controller,
       enabled: widget.enabled,
-      prefixIcon: KpiColorSwatchPrefix(color: widget.value),
+      prefixIcon: PepColorSwatchPrefix(color: widget.value),
       suffixIcon: IconButton(
         icon: const Icon(Icons.palette_outlined),
-        style: KpiButtonStyles.iconStyle(KpiButtonSize.s40),
+        style: PepButtonStyles.iconStyle(PepButtonSize.s40),
         onPressed: widget.enabled ? () => _open(context) : null,
       ),
       inputFormatters: [

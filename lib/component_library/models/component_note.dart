@@ -1,16 +1,17 @@
-/// A single row in Part 1 (programmer notes vs M3).
+/// A single programmer setup note for Part 1 (theme / kit configuration).
 class ComponentNote {
   const ComponentNote({
-    required this.variant,
-    required this.m3Behavior,
-    required this.ourImplementation,
-    required this.action,
+    required this.topic,
+    required this.spec,
+    this.setupCode,
   });
 
-  final String variant;
-  final String m3Behavior;
-  final String ourImplementation;
+  /// Theme key or widget name, e.g. `filledButtonTheme`, `ActListItem`.
+  final String topic;
 
-  /// e.g. "Use as-is", "Modify theme", "Create new variant"
-  final String action;
+  /// What to configure (colors, type, sizes, paddings).
+  final String spec;
+
+  /// Optional Dart snippet shown when the note is expanded.
+  final String? setupCode;
 }

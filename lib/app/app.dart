@@ -6,14 +6,14 @@ import '../core/theme/app_theme_controller.dart';
 import '../core/theme/app_theme_scope.dart';
 import '../component_library/presentation/component_library_page.dart';
 
-class KpiApp extends StatefulWidget {
-  const KpiApp({super.key});
+class PepApp extends StatefulWidget {
+  const PepApp({super.key});
 
   @override
-  State<KpiApp> createState() => _KpiAppState();
+  State<PepApp> createState() => _PepAppState();
 }
 
-class _KpiAppState extends State<KpiApp> {
+class _PepAppState extends State<PepApp> {
   late final AppThemeController _themeController = AppThemeController(
     primary: AppColors.seed,
     secondary: AppColors.secondarySeed,
@@ -36,7 +36,7 @@ class _KpiAppState extends State<KpiApp> {
           final secondary = _themeController.secondary;
 
           return MaterialApp(
-            title: 'KPI Flutter',
+            title: 'PEP Flutter',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(primary: primary, secondary: secondary),
             darkTheme: AppTheme.dark(primary: primary, secondary: secondary),

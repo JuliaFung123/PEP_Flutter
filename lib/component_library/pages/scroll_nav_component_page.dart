@@ -31,24 +31,21 @@ class _ScrollNavComponentPageState extends State<ScrollNavComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Primary',
-      m3Behavior: 'Primary TabBar as the only approved scroll-nav chrome.',
-      ourImplementation: '`ScrollNav` wraps primary `TabBar` only.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Content section',
-      m3Behavior: 'N/A — layout block, not an M3 container.',
-      ourImplementation:
-          '`ScrollNavSection` — padding only; no background, outline, or radius.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Scroll sync',
-      m3Behavior: 'N/A — in-page anchor + scroll spy.',
-      ourImplementation:
-          '`ScrollNavLinker` — tap → scroll to section; scroll → update tab.',
-      action: 'Use as-is',
+      topic: 'ScrollNav / ScrollNavSection / ScrollNavLinker',
+      spec:
+          'Primary TabBar chrome only. Section padding 16/20/16/24 '
+          '(no bg/outline/radius). Linker: tap → scroll; scroll → tab.',
+      setupCode: '''
+ScrollNav(
+  labels: labels,
+  selectedIndex: index,
+  onDestinationSelected: (i) {},
+)
+ScrollNavSection(
+  padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+  child: content,
+)
+''',
     ),
   ];
 

@@ -28,31 +28,19 @@ class GlassSurfaceComponentPage extends StatelessWidget {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Glass surface',
-      m3Behavior: 'No M3 Glass component or token.',
-      ourImplementation:
-          '`GlassSurface` — `ClipRRect` + `BackdropFilter` (blur) + translucent '
-          '`ColorScheme.surface` tint. Normal 20% / strong 40%. Light '
-          '`outlineVariant` border. Defaults: sigma 16, radius 16.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Tint / blur / gradient',
-      m3Behavior: 'N/A — product visual treatment.',
-      ourImplementation:
-          'Solid tint via `glassSurfaceTint` (normal/strong), or '
-          '`glassBottomCaptionGradient` (clear → same opacity). Blur and '
-          'gradient combine on caption bars. `blurSigma: 0` skips '
-          'BackdropFilter. Must sit above painted content to show blur.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Performance',
-      m3Behavior: 'N/A.',
-      ourImplementation:
-          'Clip tightly; avoid many nested or full-screen glass panels '
-          '(especially in long lists).',
-      action: 'Use as-is',
+      topic: 'GlassSurface + kGlassSurface*',
+      spec:
+          'Blur sigma 16; radius 16; surface tint 10%/20%; outlineVariant '
+          'border ~40%. Caption ink: onSurface. Keep panels small.',
+      setupCode: '''
+GlassSurface(
+  blurSigma: kGlassSurfaceBlurSigma,
+  borderRadius: BorderRadius.circular(kGlassSurfaceRadius),
+  tint: glassSurfaceTint(colorScheme), // or strong: true
+  // gradient: glassBottomCaptionGradient(colorScheme),
+  child: Text('Frost', style: TextStyle(color: colorScheme.onSurface)),
+)
+''',
     ),
   ];
 
@@ -81,7 +69,7 @@ class GlassSurfaceComponentPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Normal · 20% tint',
+            'Normal · 10% tint',
             style: textTheme.bodySmall?.copyWith(color: muted),
           ),
           const SizedBox(height: 12),
@@ -114,7 +102,7 @@ class GlassSurfaceComponentPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Strong · 40% tint',
+            'Strong · 20% tint',
             style: textTheme.bodySmall?.copyWith(color: muted),
           ),
           const SizedBox(height: 12),
@@ -145,7 +133,7 @@ class GlassSurfaceComponentPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Caption · blur + gradient (→ 20%)',
+            'Caption · blur + gradient (→ 10%)',
             style: textTheme.bodySmall?.copyWith(color: muted),
           ),
           const SizedBox(height: 12),
@@ -183,7 +171,7 @@ class GlassSurfaceComponentPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Caption · blur + gradient strong (→ 40%)',
+            'Caption · blur + gradient strong (→ 20%)',
             style: textTheme.bodySmall?.copyWith(color: muted),
           ),
           const SizedBox(height: 12),

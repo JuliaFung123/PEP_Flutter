@@ -1,0 +1,37 @@
+---
+description: Layout pages must reuse Component Library materials; gaps go to Pending for review
+alwaysApply: true
+---
+
+# Layout pages → Component Library first
+
+When building or changing **layout / feature screens** (e.g. `lib/features/**`):
+
+## Required workflow
+
+1. **Reuse library first**  
+   Prefer widgets and variants already documented under `lib/component_library/` (Theme / Atom / Layout Block groups and shared widgets in `lib/component_library/widgets/`).
+
+2. **Do not invent one-off UI**  
+   Avoid local private widgets that duplicate library behavior (custom chips, headers, app bars, tabs, etc.) when a library component exists. Wire the library widget instead.
+
+3. **If nothing fits**  
+   - Implement the minimal UI on the layout page only as a temporary stand-in.  
+   - Add a `PendingVariant` on the **related** component library page (`pendingVariants:` on that page’s scaffold).  
+   - Fill: `name`, `foundIn` (layout screen name), `description`, `suggestedAction`.  
+   - **Ask the user to review** the pending item before promoting it to a full library component.
+
+4. **After approval**  
+   Extract a shared library widget/page, register it if needed, then replace the layout stand-in with the library API.
+
+## Examples
+
+- Timeslot chips on 活動 → `TimeslotSelectionChip` (library Layout Block).  
+- Image header → `ImageHeaderWidget`.  
+- New ticket card only on 活動 → keep local for now + `PendingVariant` on Cards (or a new Layout Block page) + ask for review.
+
+## Do not
+
+- Copy-paste styled Material widgets into layouts when the library already defines the pattern.  
+- Add a new library page without user review when the need was discovered from a layout gap (use Pending first).
+- Use bare `FilledButton` / `OutlinedButton` / `TextButton` / `IconButton` sizing in layouts or blocks — apply `PepButtonStyles` (`labelStyle` / `iconStyle`, usually `PepButtonSize.s40`). App bar nav icons stay **48×48** (App bars kit), not the Buttons size scale.

@@ -28,52 +28,27 @@ class TicketCardComponentPage extends StatelessWidget {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Background',
-      m3Behavior: 'N/A — product surface, not an M3 color role.',
-      ourImplementation:
-          '`backgroundColor` and/or `backgroundImage` from backend. '
-          'Image draws over the color when both are set. No outline; '
-          '`Material` elevation 3 (M3 Elevation Light/3).',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Content brightness',
-      m3Behavior: 'Keep contrast readable on the filled surface.',
-      ourImplementation:
-          '`contentBrightness: Brightness.light` → dark ink (pale bg). '
-          '`Brightness.dark` → light ink (dark / saturated bg). Backend or '
-          'layout picks the mode so title, prices, and icons stay readable.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Price types',
-      m3Behavior: 'N/A — commerce display driven by client config.',
-      ourImplementation:
-          '`TicketCardPrice.cash` / `.token` / `.coupon`. Pass only the types '
-          'enabled for that client. Optional `originalAmount` → strikethrough.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Active / Inactive',
-      m3Behavior: 'Interactive vs unavailable option.',
-      ourImplementation:
-          '`TicketCardStatus.active` (full opacity, tappable) or `.inactive` '
-          '(≈50% opacity, taps ignored).',
-      action: 'Use as-is',
+      topic: 'TicketCard',
+      spec:
+          'Backend backgroundColor / backgroundImage; elevation 3; radius 10; '
+          'padding 16×8; titleSemiLarge. contentBrightness picks ink. '
+          'Prices: cash/token/coupon; status active (1.0) / inactive (0.5).',
+      setupCode: '''
+TicketCard(
+  title: 'Adult',
+  contentBrightness: Brightness.light,
+  backgroundColor: const Color(0xFFE4F0CC),
+  prices: const [
+    TicketCardPrice.cash(amount: '120', originalAmount: '150'),
+  ],
+  status: TicketCardStatus.active,
+  onTap: () {},
+)
+''',
     ),
   ];
 
-  static const _pending = <PendingVariant>[
-    PendingVariant(
-      name: 'Activity list row',
-      foundIn: 'Items List (ActivityListPage)',
-      description:
-          'Figma List/活動 — 140×128 thumb (radius 16), titleSmall max 3 lines, '
-          'location_on + calendar_today metadata (labelMedium).',
-      suggestedAction:
-          'Promote to Layout Block after review (or Cards page)',
-    ),
-  ];
+  static const _pending = <PendingVariant>[];
 
   @override
   Widget build(BuildContext context) {

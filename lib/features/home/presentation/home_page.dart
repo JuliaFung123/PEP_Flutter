@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../component_library/widgets/kpi_button_styles.dart';
+import '../../../component_library/widgets/pep_button_styles.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('KPI Flutter', style: textTheme.titleLarge),
+        title: Text('PEP Flutter', style: textTheme.titleLarge),
         actions: [
           SizedBox(
             width: 48,
@@ -75,17 +75,17 @@ class _HomePageState extends State<HomePage> {
             children: [
               FilledButton(
                 onPressed: _incrementCounter,
-                style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+                style: PepButtonStyles.labelStyle(context, PepButtonSize.s40),
                 child: const Text('Filled'),
               ),
               OutlinedButton(
                 onPressed: _incrementCounter,
-                style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+                style: PepButtonStyles.labelStyle(context, PepButtonSize.s40),
                 child: const Text('Outlined'),
               ),
               TextButton(
                 onPressed: _incrementCounter,
-                style: KpiButtonStyles.labelStyle(context, KpiButtonSize.s40),
+                style: PepButtonStyles.labelStyle(context, PepButtonSize.s40),
                 child: const Text('Text'),
               ),
             ],
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
               subtitle: Text('Taps: $_counter', style: textTheme.bodySmall),
               trailing: IconButton.filledTonal(
                 onPressed: _incrementCounter,
-                style: KpiButtonStyles.iconStyle(KpiButtonSize.s40),
+                style: PepButtonStyles.iconStyle(PepButtonSize.s40),
                 icon: const Icon(Icons.add),
               ),
             ),
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(
             icon: Icon(Icons.analytics_outlined),
             selectedIcon: Icon(Icons.analytics),
-            label: 'KPIs',
+            label: 'Explore',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),

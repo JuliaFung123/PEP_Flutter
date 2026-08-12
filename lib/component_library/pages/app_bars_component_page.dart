@@ -55,62 +55,51 @@ class _AppBarsComponentPageState extends State<AppBarsComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Padding / gap',
-      m3Behavior:
-          'Small: 4dp edge, 48 icon buttons, ~4dp title gap. '
-          'Flexible: 4dp icon edge, 8dp top icon inset, 16dp title inset, '
-          '12dp title bottom. Search: 4 / 8 / 8 / 4.',
-      ourImplementation:
-          'Overrides Flutter defaults (leadingWidth 56, titleSpacing 16). '
-          'Uses leadingWidth 52 (4+48), titleSpacing 4 (or 16 without leading), '
-          'actionsPadding end 4. Flexible titlePadding start 16 / bottom 12; '
-          'Large height 120 (not baseline 152).',
-      action: 'Use as-is',
+      topic: 'appBarTheme',
+      spec:
+          'toolbarHeight 64; titleSemiLarge; actionsPadding end 4; '
+          'surface / onSurface; elevation 0, scrolledUnderElevation 3.',
+      setupCode: '''
+appBarTheme: AppBarTheme(
+  centerTitle: false,
+  toolbarHeight: 64,
+  elevation: 0,
+  scrolledUnderElevation: 3,
+  actionsPadding: const EdgeInsetsDirectional.only(end: 4),
+  backgroundColor: colorScheme.surface,
+  foregroundColor: colorScheme.onSurface,
+  titleTextStyle: appTypography.titleSemiLarge.copyWith(
+    color: colorScheme.onSurface,
+  ),
+),
+''',
     ),
     ComponentNote(
-      variant: 'Small / Center-aligned title',
-      m3Behavior: 'Compact 64dp bar; title vertically centered.',
-      ourImplementation:
-          'Title = `AppTypography.titleSemiLarge` (18/26 · w500). '
-          'Subtitle = `TextTheme.titleSmall`. AppBarTheme matches this.',
-      action: 'Use as-is',
+      topic: 'AppBar kit paddings',
+      spec:
+          'leadingWidth 52 (4+48); titleSpacing 4 (16 without leading); '
+          'icon buttons 48×48; Medium flex 112; Large flex 120.',
+      setupCode: '''
+AppBar(
+  toolbarHeight: kM3ToolbarHeight, // 64
+  leadingWidth: kM3AppBarEdgePadding + kM3AppBarIconButtonSize, // 52
+  titleSpacing: kM3AppBarTitleGap, // 4
+  actionsPadding: const EdgeInsetsDirectional.only(end: kM3AppBarEdgePadding),
+)
+''',
     ),
     ComponentNote(
-      variant: 'Medium flexible title',
-      m3Behavior: 'Expanded title in flexible space · 112dp.',
-      ourImplementation:
-          'Title = `AppTypography.titleSemiLarge` (18/26 · w500) — Figma '
-          'AppBar Medium node 2073:100. Subtitle = `TextTheme.titleSmall` · '
-          'gap 4.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Large flexible title',
-      m3Behavior: 'Largest expanded title · 120dp (flexible, not baseline 152).',
-      ourImplementation:
-          'Title = `TextTheme.displaySmall` (36/44 · w400). '
-          'Subtitle = `TextTheme.titleMedium` · gap 8.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Search',
-      m3Behavior: '64dp bar with search field · 4/8/8/4 gaps.',
-      ourImplementation:
-          '`SearchAnchor.bar` hint/text = `TextTheme.bodyLarge`; '
-          'titleSpacing 8 with leading.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Collapsing medium → small',
-      m3Behavior:
-          'Default M3 Medium (and Large) top app bar: expanded title under '
-          'the icon row; on scroll collapses to Small (64) with the title in '
-          'the toolbar. Requires scroll wiring — not automatic alone.',
-      ourImplementation:
-          '`SliverAppBar` pinned · expanded ≈ Medium 112 · toolbar 64. '
-          'Expanded + collapsed title = `titleSemiLarge` (Figma Medium). '
-          'Live demo below (scroll inside). Used on Ticket details.',
-      action: 'Use as-is',
+      topic: 'Flexible / Search titles',
+      spec:
+          'Small/Medium: titleSemiLarge + titleSmall. Large: displaySmall + '
+          'titleMedium. Search: bodyLarge; titleSpacing 8 with leading.',
+      setupCode: '''
+// Medium flexible title
+Text(title, style: AppTypography.of(context).titleSemiLarge)
+// Large flexible title
+Text(title, style: Theme.of(context).textTheme.displaySmall)
+// SearchAnchor.bar — bodyLarge hint/text
+''',
     ),
   ];
 

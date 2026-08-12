@@ -31,42 +31,18 @@ class _ColorPickerComponentPageState extends State<ColorPickerComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Input field',
-      m3Behavior: 'Compact control opens the picker without leaving the page.',
-      ourImplementation:
-          'KpiTextField — type hex directly; palette trailing icon opens docked sheet.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Docked sheet',
-      m3Behavior: 'Picker anchors to the bottom edge for focused selection.',
-      ourImplementation: 'Modal bottom sheet with drag handle, Cancel, and Done.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Saturation / value',
-      m3Behavior: '2D plane to pick chroma and brightness for the current hue.',
-      ourImplementation: 'Gradient plane with draggable handle.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Hue slider',
-      m3Behavior: 'Full spectrum slider to change the base hue.',
-      ourImplementation: 'Rainbow track with circular thumb.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Hex input',
-      m3Behavior: 'Precise color entry for design handoff.',
-      ourImplementation:
-          'KpiTextField (no label) with color swatch leading icon and hex value.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Transparency',
-      m3Behavior: 'Optional alpha slider in some pickers.',
-      ourImplementation: 'Not included — opaque colors only.',
-      action: 'Use as-is',
+      topic: 'M3ColorPicker / PepTextField',
+      spec:
+          'Hex field + palette icon; docked bottomSheetTheme (drag handle, '
+          'radius 20). Opaque only — no alpha. SV plane + hue slider.',
+      setupCode: '''
+// Field opens modal bottom sheet (inherits bottomSheetTheme).
+showModalBottomSheet(
+  context: context,
+  showDragHandle: true,
+  builder: (_) => /* picker sheet */,
+);
+''',
     ),
   ];
 

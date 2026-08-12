@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/component_note.dart';
 import 'component_empty_hint.dart';
 
-/// Part 1 — programmer notes comparing our implementation to M3.
+/// Part 1 — theme / kit setup notes with expandable code.
 class ComponentNoteTable extends StatelessWidget {
   const ComponentNoteTable({super.key, required this.notes});
 
@@ -12,105 +13,126 @@ class ComponentNoteTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (notes.isEmpty) {
-      return const ComponentEmptyHint('No notes yet. Document M3 differences here.');
+      return const ComponentEmptyHint('No theme/setup notes yet.');
     }
 
-    final borderColor = Theme.of(context).colorScheme.outlineVariant;
-    final headerStyle = Theme.of(context).textTheme.labelLarge;
-    final bodyStyle = Theme.of(context).textTheme.bodyMedium;
-    final actionStyle = Theme.of(context).textTheme.labelLarge;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < notes.length; i++) ...[
+          if (i > 0) const SizedBox(height: 8),
+          _NoteExpansionTile(note: notes[i]),
+        ],
+      ],
+    );
+  }
+}
 
-    return SizedBox(
-      width: double.infinity,
-      child: Table(
-        columnWidths: const {
-          0: FlexColumnWidth(1),
-          1: FlexColumnWidth(1.4),
-          2: FlexColumnWidth(1.4),
-          3: FlexColumnWidth(1),
-        },
-        border: TableBorder.all(color: borderColor),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: [
-            TableRow(
-              children: [
-                _headerCell(
-                  child: Text('Variant', style: headerStyle),
-                  alignment: Alignment.centerLeft,
-                ),
-                _headerCell(
-                  child: Text('M3 behavior', style: headerStyle),
-                ),
-                _headerCell(
-                  child: Text('Our implementation', style: headerStyle),
-                ),
-                _headerCell(
-                  child: Text('Action', style: headerStyle),
-                ),
-              ],
-            ),
-            for (final note in notes)
-              TableRow(
-                children: [
-                  _bodyCell(
-                    alignment: Alignment.centerLeft,
-                    child: Text(note.variant, style: bodyStyle),
-                  ),
-                  _bodyCell(child: Text(note.m3Behavior, style: bodyStyle)),
-                  _bodyCell(child: Text(note.ourImplementation, style: bodyStyle)),
-                  _bodyCell(
-                    child: Text(
-                      note.action,
-                      style: actionStyle?.copyWith(
-                        color: _actionColor(context, note.action),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
+class _NoteExpansionTile extends StatelessWidget {
+  const _NoteExpansionTile({required this.note});
+
+  final ComponentNote note;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final code = note.setupCode?.trim();
+    final hasCode = code != null && code.isNotEmpty;
+
+    return Material(
+      color: colorScheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(12),
+      clipBehavior: Clip.antiAlias,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          initiallyExpanded: false,
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          title: Text(
+            note.topic,
+            style: textTheme.titleSmall?.copyWith(color: colorScheme.onSurface),
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              note.spec,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
               ),
+            ),
+          ),
+          children: [
+            if (hasCode)
+              _SetupCodeBlock(code: code)
+            else
+              Text(
+                'No theme slot — use the widget / kit API only.',
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SetupCodeBlock extends StatelessWidget {
+  const _SetupCodeBlock({required this.code});
+
+  final String code;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 40, 12),
+            child: SelectableText(
+              code,
+              style: textTheme.bodySmall?.copyWith(
+                fontFamily: 'monospace',
+                color: colorScheme.onSurface,
+                height: 1.4,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: IconButton(
+              tooltip: 'Copy',
+              visualDensity: VisualDensity.compact,
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: code));
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Copied setup code'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.copy_outlined,
+                size: 18,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  Widget _headerCell({
-    required Widget child,
-    Alignment alignment = Alignment.center,
-  }) {
-    return TableCell(
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        alignment: alignment,
-        child: child,
-      ),
-    );
-  }
-
-  Widget _bodyCell({
-    required Widget child,
-    Alignment alignment = Alignment.center,
-  }) {
-    return TableCell(
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        alignment: alignment,
-        child: child,
-      ),
-    );
-  }
-
-  Color _actionColor(BuildContext context, String action) {
-    final scheme = Theme.of(context).colorScheme;
-    final lower = action.toLowerCase();
-    if (lower.contains('create') || lower.contains('new')) {
-      return scheme.error;
-    }
-    if (lower.contains('modify') || lower.contains('theme')) {
-      return scheme.tertiary;
-    }
-    return scheme.primary;
   }
 }

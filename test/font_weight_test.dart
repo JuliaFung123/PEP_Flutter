@@ -1,7 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kpi_flutter/core/theme/app_fonts.dart';
+import 'package:pep_flutter/core/theme/app_fonts.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

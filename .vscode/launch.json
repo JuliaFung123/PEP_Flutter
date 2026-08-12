@@ -2,19 +2,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "KPI Flutter (Chrome)",
+      "name": "PEP Flutter (Chrome)",
       "request": "launch",
       "type": "dart",
       "deviceId": "chrome"
     },
     {
-      "name": "KPI Flutter (Windows)",
+      "name": "PEP Flutter (Windows)",
       "request": "launch",
       "type": "dart",
       "deviceId": "windows"
     },
     {
-      "name": "KPI Flutter (Android)",
+      "name": "PEP Flutter (Android)",
       "request": "launch",
       "type": "dart"
     }

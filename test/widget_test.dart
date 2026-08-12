@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kpi_flutter/app/app.dart';
-import 'package:kpi_flutter/component_library/models/component_library_group.dart';
-import 'package:kpi_flutter/component_library/registry/component_registry.dart';
+import 'package:pep_flutter/app/app.dart';
+import 'package:pep_flutter/component_library/models/component_library_group.dart';
+import 'package:pep_flutter/component_library/registry/component_registry.dart';
 
 void main() {
   testWidgets('Component library lists grouped atom pages', (WidgetTester tester) async {
-    await tester.pumpWidget(const KpiApp());
+    await tester.pumpWidget(const PepApp());
 
     expect(find.text('Component library'), findsOneWidget);
     expect(ComponentRegistry.all.length, 15);

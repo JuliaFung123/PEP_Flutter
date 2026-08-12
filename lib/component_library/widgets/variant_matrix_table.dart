@@ -31,6 +31,7 @@ class VariantMatrixCell {
     required this.row,
     this.isSelected = false,
     this.showLeadingIcon = false,
+    this.showAvatar = false,
     this.showTrailingIcon = false,
     this.showHelperText = true,
     this.isEnabled = true,
@@ -40,6 +41,7 @@ class VariantMatrixCell {
   final VariantMatrixRow row;
   final bool isSelected;
   final bool showLeadingIcon;
+  final bool showAvatar;
   final bool showTrailingIcon;
   final bool showHelperText;
   final bool isEnabled;
@@ -58,6 +60,9 @@ class VariantIconControls extends StatelessWidget {
     this.trailingLabel = 'Trailing icon',
     this.showLeadingToggle = true,
     this.showTrailingToggle = true,
+    this.showAvatar,
+    this.onAvatarChanged,
+    this.avatarLabel = 'Avatar',
     this.showHelperText,
     this.onHelperTextChanged,
     this.helperTextLabel = 'Helper text',
@@ -71,9 +76,14 @@ class VariantIconControls extends StatelessWidget {
   final String trailingLabel;
   final bool showLeadingToggle;
   final bool showTrailingToggle;
+  final bool? showAvatar;
+  final ValueChanged<bool>? onAvatarChanged;
+  final String avatarLabel;
   final bool? showHelperText;
   final ValueChanged<bool>? onHelperTextChanged;
   final String helperTextLabel;
+
+  bool get _showAvatarToggle => showAvatar != null && onAvatarChanged != null;
 
   bool get _showHelperTextToggle =>
       showHelperText != null && onHelperTextChanged != null;
@@ -91,6 +101,13 @@ class VariantIconControls extends StatelessWidget {
             label: leadingLabel,
             value: showLeadingIcon,
             onChanged: onLeadingChanged,
+          ),
+        if (_showAvatarToggle)
+          _labeledSwitch(
+            context: context,
+            label: avatarLabel,
+            value: showAvatar!,
+            onChanged: onAvatarChanged!,
           ),
         if (showTrailingToggle)
           _labeledSwitch(
@@ -136,6 +153,7 @@ class VariantMatrixTable extends StatelessWidget {
     required this.showLeadingIcon,
     required this.showTrailingIcon,
     required this.selectionState,
+    this.showAvatar = false,
     this.showHelperText = true,
     this.cellBackgroundColor,
     this.statuses = const [
@@ -148,6 +166,7 @@ class VariantMatrixTable extends StatelessWidget {
   final VariantCellBuilder cellBuilder;
   final bool showLeadingIcon;
   final bool showTrailingIcon;
+  final bool showAvatar;
   final bool showHelperText;
   final Map<String, bool> selectionState;
   /// When set, paints every table cell (header and body) for contrast checks.
@@ -212,6 +231,7 @@ class VariantMatrixTable extends StatelessWidget {
             row: row,
             isSelected: isSelected,
             showLeadingIcon: showLeadingIcon && row.supportsLeadingIcon,
+            showAvatar: showAvatar && row.supportsLeadingIcon,
             showTrailingIcon: showTrailingIcon && row.supportsTrailingIcon,
             showHelperText: showHelperText,
             isEnabled: status != VariantStaticStatus.disabled,

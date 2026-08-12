@@ -1,11 +1,11 @@
 {
-    "name": "kpi_flutter",
-    "short_name": "kpi_flutter",
+    "name": "PEP Flutter",
+    "short_name": "PEP",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "PEP Flutter app with Material Design 3.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

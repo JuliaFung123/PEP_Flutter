@@ -5,7 +5,7 @@ import '../models/component_note.dart';
 import '../models/component_page_meta_data.dart';
 import '../models/pending_variant.dart';
 import '../widgets/component_page_scaffold.dart';
-import '../widgets/kpi_carousel.dart';
+import '../widgets/pep_carousel.dart';
 
 /// Atom: Material 3 Carousel ([CarouselView.weighted]).
 class CarouselComponentPage extends StatelessWidget {
@@ -17,53 +17,43 @@ class CarouselComponentPage extends StatelessWidget {
     m3SpecUrl: 'https://m3.material.io/components/carousel/specs',
     description:
         'Horizontal media strip using Flutter Material 3 '
-        '`CarouselView.weighted`. Kit layouts match M3 Hero, Center-aligned '
-        'hero, and Multi-browse. Item content uses '
-        '`KpiCarouselFeaturedCard`.',
+        '`CarouselView.weighted`. Specs: leading/trailing 16, top/bottom 8, '
+        'gap 8, small 40–56, radius 28, large dynamic. Layouts: Hero, '
+        'Center-aligned hero, Multi-browse. Featured captions live on '
+        '`PepCarouselFeaturedCard`. 活動 Items List uses Hero from this kit.',
     group: ComponentLibraryGroup.atom,
   );
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Hero',
-      m3Behavior:
-          'At least one large and one small item. '
-          'https://m3.material.io/components/carousel/specs',
-      ourImplementation:
-          '`KpiCarousel(layout: hero)` — large then small. Small item width '
-          'locked to M3 40–56dp (target 56); `shrinkExtent: 40`. Caption only '
-          'when item width > 56.',
-      action: 'Use as-is',
+      topic: 'PepCarousel',
+      spec:
+          'M3 metrics: edges 16, gap 8, radius 28; small item 40–56. '
+          'Featured height = Image header (min(w/(4/3), 320)). '
+          'Layouts: hero / centerAlignedHero / multiBrowse.',
+      setupCode: '''
+PepCarouselFeaturedBox(
+  child: PepCarousel(
+    layout: PepCarouselLayout.hero,
+    itemCount: items.length,
+    itemBuilder: (context, index) => PepCarouselFeaturedCard(...),
+  ),
+)
+''',
     ),
     ComponentNote(
-      variant: 'Center-aligned hero',
-      m3Behavior:
-          'Large item centered with small peeks on both sides. '
-          'https://m3.material.io/components/carousel/specs',
-      ourImplementation:
-          '`KpiCarousel(layout: centerAlignedHero)` — small · large · small. '
-          'Small peeks 40–56dp; no caption on small.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Multi-browse',
-      m3Behavior:
-          'At least one large, medium, and small item visible. '
-          'https://m3.material.io/components/carousel/specs',
-      ourImplementation:
-          '`KpiCarousel(layout: multiBrowse)` — large/medium/small. Small '
-          'slots 40–56dp (`consumeMaxWeight: false`). Compact strips use '
-          '`showCaption: false`.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Featured card',
-      m3Behavior: 'Carousel item content is app-defined.',
-      ourImplementation:
-          '`KpiCarouselFeaturedCard` — cover image; liquid-glass caption with '
-          'content-aware title color (white on dark media, `onSurface` on '
-          'light). Small items are image-only. Badge: `surface` / `onSurface`.',
-      action: 'Use as-is',
+      topic: 'PepCarouselFeaturedCard caption',
+      spec:
+          'Local glass bottom bar on featured items only. glassBrightness from '
+          'cover band; title onSurface; badge inverseSurface / onInverseSurface '
+          'via GlassMediaInk; padding 16×12; titleMedium.',
+      setupCode: '''
+PepCarouselFeaturedCard(
+  image: assetPath,
+  title: 'Featured title',
+  dateBadge: 'Mar 12',
+)
+''',
     ),
   ];
 
@@ -78,6 +68,16 @@ class CarouselComponentPage extends StatelessWidget {
 
   static const _demoItems = <(String image, String badge, String title)>[
     (
+      'assets/images/demo/demo_header_5.png',
+      'Feb 1 - Feb 14',
+      '情人節甜點體驗工作坊',
+    ),
+    (
+      'assets/images/demo/demo_header_4.png',
+      'Jan 5 - Jan 12',
+      '新年市集週末限定開幕',
+    ),
+    (
       'assets/images/demo/demo_header_1.png',
       'Dec 2 - Dec 20',
       '聖誕Party將於24日下午1點開始',
@@ -91,16 +91,6 @@ class CarouselComponentPage extends StatelessWidget {
       'assets/images/demo/demo_header_3.png',
       'Dec 1 - Dec 31',
       '冬季限定活動開放報名中',
-    ),
-    (
-      'assets/images/demo/demo_header_4.png',
-      'Jan 5 - Jan 12',
-      '新年市集週末限定開幕',
-    ),
-    (
-      'assets/images/demo/demo_header_5.png',
-      'Feb 1 - Feb 14',
-      '情人節甜點體驗工作坊',
     ),
   ];
 
@@ -120,18 +110,17 @@ class CarouselComponentPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Hero · large then small (small 40–56dp)',
+            'Hero · M3 padding 16/8 · gap 8 · radius 28 · small 40–56',
             style: labelStyle,
           ),
           const SizedBox(height: 12),
-          SizedBox(
-            height: kKpiCarouselFeaturedHeight,
-            child: KpiCarousel(
-              layout: KpiCarouselLayout.hero,
+          PepCarouselFeaturedBox(
+            child: PepCarousel(
+              layout: PepCarouselLayout.hero,
               onTap: (_) {},
               children: [
                 for (final item in _demoItems)
-                  KpiCarouselFeaturedCard(
+                  PepCarouselFeaturedCard(
                     image: item.$1,
                     dateBadge: item.$2,
                     title: item.$3,
@@ -141,18 +130,17 @@ class CarouselComponentPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Center-aligned hero · small · large · small (small 40–56dp)',
+            'Center-aligned hero · M3 metrics · infinite',
             style: labelStyle,
           ),
           const SizedBox(height: 12),
-          SizedBox(
-            height: kKpiCarouselFeaturedHeight,
-            child: KpiCarousel(
-              layout: KpiCarouselLayout.centerAlignedHero,
+          PepCarouselFeaturedBox(
+            child: PepCarousel(
+              layout: PepCarouselLayout.centerAlignedHero,
               onTap: (_) {},
               children: [
                 for (final item in _demoItems)
-                  KpiCarouselFeaturedCard(
+                  PepCarouselFeaturedCard(
                     image: item.$1,
                     dateBadge: item.$2,
                     title: item.$3,
@@ -162,26 +150,26 @@ class CarouselComponentPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Multi-browse · large / medium / small (small 40–56dp)',
+            'Multi-browse · M3 metrics · infinite',
             style: labelStyle,
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: kKpiCarouselCompactHeight,
-            child: KpiCarousel(
-              layout: KpiCarouselLayout.multiBrowse,
+            height: kPepCarouselCompactHeight,
+            child: PepCarousel(
+              layout: PepCarouselLayout.multiBrowse,
               elevation: 0,
               onTap: (_) {},
               children: [
                 for (final item in _demoItems)
-                  KpiCarouselFeaturedCard(
+                  PepCarouselFeaturedCard(
                     image: item.$1,
                     title: item.$3,
                     showCaption: false,
                   ),
                 // Need enough children for 5 visible slots.
                 for (final item in _demoItems)
-                  KpiCarouselFeaturedCard(
+                  PepCarouselFeaturedCard(
                     image: item.$1,
                     title: item.$3,
                     showCaption: false,

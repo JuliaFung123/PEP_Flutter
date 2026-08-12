@@ -5,7 +5,7 @@ import 'app_colors.dart';
 import 'app_fonts.dart';
 import 'app_typography.dart';
 import 'color_theme_builder.dart';
-import 'kpi_theme_extension.dart';
+import 'pep_theme_extension.dart';
 
 
 
@@ -92,7 +92,7 @@ abstract final class AppTheme {
       typography: typography,
       textTheme: textTheme,
       primaryTextTheme: textTheme,
-      extensions: [KpiThemeExtension.from(colorScheme), appTypography],
+      extensions: [PepThemeExtension.from(colorScheme), appTypography],
       // M3 small top app bar is 64dp; Flutter still defaults to kToolbarHeight (56).
       // Padding: 4dp trailing edge (leading/titleSpacing set per AppBar — see App bars page).
       // https://m3.material.io/components/app-bars/specs
@@ -128,17 +128,13 @@ abstract final class AppTheme {
       ),
 
       chipTheme: ChipThemeData(
-
-        labelStyle: textTheme.labelLarge,
-
+        labelStyle: textTheme.labelLarge?.copyWith(color: colorScheme.onSurface),
+        iconTheme: IconThemeData(color: colorScheme.onSurface, size: 18),
+        deleteIconColor: colorScheme.onSurface,
         side: BorderSide(color: colorScheme.outlineVariant),
-
         shape: RoundedRectangleBorder(
-
           borderRadius: BorderRadius.circular(8),
-
         ),
-
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -149,7 +145,7 @@ abstract final class AppTheme {
               colorScheme.onSurface.withValues(alpha: 0.12),
           disabledForegroundColor:
               colorScheme.onSurface.withValues(alpha: 0.38),
-          // Default = Buttons kit S 40. Prefer KpiButtonStyles for XS / M.
+          // Default = Buttons kit S 40. Prefer PepButtonStyles for XS / M.
           minimumSize: const Size(0, 40),
           maximumSize: const Size(double.infinity, 40),
           padding: const EdgeInsets.symmetric(horizontal: 16),

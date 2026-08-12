@@ -25,21 +25,18 @@ class PhotoGalleryComponentPage extends StatelessWidget {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Thumbnails',
-      m3Behavior: 'Image list / grid of media previews.',
-      ourImplementation:
-          '`PhotoGallery` — GridView (default 3 columns), `BoxFit.cover`, '
-          '12dp corners. Pass `images` as asset paths or network URLs.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Full-page viewer',
-      m3Behavior: 'Immersive media viewer with paging.',
-      ourImplementation:
-          'Opens `ImageHeaderGalleryPage`: black scaffold, top close (48) '
-          'returns to the grid; drag/swipe (touch + mouse) for next/prev; '
-          'double-tap to zoom (InteractiveViewer only while zoomed).',
-      action: 'Use as-is',
+      topic: 'PhotoGallery',
+      spec:
+          'GridView default 3 cols, spacing 8, radius 12, BoxFit.cover; '
+          'placeholder surfaceContainerHighest. Tap → ImageHeaderGalleryPage.',
+      setupCode: '''
+PhotoGallery(
+  images: imageUrls,
+  crossAxisCount: 3,
+  spacing: 8,
+  borderRadius: const BorderRadius.all(Radius.circular(12)),
+)
+''',
     ),
   ];
 

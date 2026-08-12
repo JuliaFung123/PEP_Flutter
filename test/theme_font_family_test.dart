@@ -1,6 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kpi_flutter/core/theme/app_theme.dart';
+import 'package:pep_flutter/core/theme/app_theme.dart';
 
 void main() {
   test('theme slots keep per-weight families', () {

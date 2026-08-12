@@ -28,36 +28,33 @@ class TypographyComponentPage extends StatelessWidget {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Figma kit',
-      m3Behavior: 'Typography.material2021 englishLike defaults (Roboto).',
-      ourImplementation:
-          'Same size / weight / tracking as Figma Flutter/* styles. Family is '
-          'Noto Sans TC bundled as **one pubspec family per weight** '
-          '(`NotoSansTC` / `Medium` / `SemiBold` / `Bold`). Theme builds from '
-          '`englishLike.merge(black)` so w500 is known before `familyFor` runs '
-          '(color-only `typography.black` has null weights → every slot was '
-          'Regular, so titleMedium matched bodyLarge).',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Title large',
-      m3Behavior: 'Flutter default w400.',
-      ourImplementation: 'Figma: w400→w500.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'TitleSemiLarge (custom)',
-      m3Behavior: 'Not an M3 TextTheme slot.',
-      ourImplementation:
-          '`AppTypography.titleSemiLarge` — 18sp / 26 · w500 · tracking 0 '
-          '(Noto Sans TC). Access via `AppTypography.of(context).titleSemiLarge`.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Body small',
-      m3Behavior: 'Flutter default tracking 0.4.',
-      ourImplementation: 'Figma: tracking 0.4→0.',
-      action: 'Use as-is',
+      topic: 'textTheme / AppTypography',
+      spec:
+          'englishLike.merge(black|white) → AppFonts (Noto Sans TC). '
+          'titleLarge w500; bodySmall tracking 0. Custom titleSemiLarge '
+          '18/26 w500 via AppTypography extension.',
+      setupCode: '''
+final geometry = typography.englishLike;
+final colors = brightness == Brightness.light
+    ? typography.black
+    : typography.white;
+final textTheme = AppFonts.textTheme(geometry.merge(colors)).copyWith(
+  titleLarge: AppFonts.style(
+    textStyle: /* titleLarge */,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0,
+  ),
+  bodySmall: AppFonts.style(
+    textStyle: /* bodySmall */,
+    letterSpacing: 0,
+  ),
+);
+extensions: [AppTypography.fromTextTheme(textTheme)],
+
+// Usage
+AppTypography.of(context).titleSemiLarge
+Theme.of(context).textTheme.titleMedium
+''',
     ),
   ];
 

@@ -159,12 +159,11 @@ class TimeslotSelectionChip extends StatelessWidget {
                         width: 20,
                         height: 20,
                         decoration: BoxDecoration(
+                          // Fill from backend; border from theme.
                           color: _swatchColor,
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(
-                            color: _isSelected
-                                ? const Color(0xFF434656)
-                                : colorScheme.outlineVariant,
+                            color: colorScheme.outlineVariant,
                           ),
                         ),
                       ),

@@ -18,34 +18,23 @@ class ImageHeaderComponentPage extends StatelessWidget {
         'https://www.figma.com/design/61SERD0hYvuj7BrwBRv210/PEP_APP-2?node-id=265-6607&t=cri1iqqDqaC4gUf3-4',
     description:
         'Hero image header with pager dots and a floating badge. '
-        'Full-width block; height = min(width÷4:3, 320); image BoxFit.cover.',
+        'Full width; height = min(width / (4/3), 320 dp); BoxFit.cover.',
     group: ComponentLibraryGroup.layoutBlock,
   );
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Size',
-      m3Behavior: 'Hero media block before page content.',
-      ourImplementation:
-          'Always full width. Height = min(width ÷ 4:3, 320). '
-          'On wide screens height caps at 320 (box may be wider than 4:3).',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Image fit',
-      m3Behavior: 'Media fills the hero frame without distortion.',
-      ourImplementation:
-          '`BoxFit.cover` — fills the whole box, crops overflow, never stretches. '
-          'Full-page gallery still uses contain.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Pager + badge',
-      m3Behavior:
-          'Shows image position and a compact count or CTA in the bottom-right corner.',
-      ourImplementation:
-          'Swipeable PageView with live dots; badge shows index/total and opens a full-page gallery.',
-      action: 'Use as-is',
+      topic: 'ImageHeaderWidget',
+      spec:
+          'Full width; height min(w/(4/3), kImageHeaderMaxHeight 320). '
+          'BoxFit.cover; placeholder surfaceContainerHighest; pager + '
+          'badge opens ImageHeaderGalleryPage.',
+      setupCode: '''
+ImageHeaderWidget(
+  images: imageUrls,
+  // size from resolveImageHeaderSize(availableWidth: width)
+)
+''',
     ),
   ];
 
@@ -81,7 +70,7 @@ class ImageHeaderComponentPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _ImageHeaderPreviewCard(
-            title: 'Full width · height min(w÷4:3, 320) · cover',
+            title: 'Full width · height min(width/(4/3), 320 dp) · cover',
             child: ImageHeaderWidget(),
           ),
         ],

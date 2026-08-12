@@ -20,18 +20,17 @@ class BadgesComponentPage extends StatelessWidget {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Small badge',
-      m3Behavior: 'Small badge on icon or avatar; shows count or dot.',
-      ourImplementation: 'Badge widget wrapping Icon.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Large badge',
-      m3Behavior: 'Large badge with label text for counts.',
-      ourImplementation:
-          '`Badge` with label; labelSmall height 1 + even leading so the '
-          'count sits vertically centered (Noto can look optically low).',
-      action: 'Use as-is',
+      topic: 'badgeTheme',
+      spec:
+          'ColorScheme.error / onError by default. Large badge: labelSmall '
+          '(height 1 + even leading for Noto optical centering).',
+      setupCode: '''
+// AppTheme does not override badgeTheme — ColorScheme defaults apply.
+Badge(
+  label: Text('3', style: textTheme.labelSmall?.copyWith(height: 1)),
+  child: Icon(Icons.notifications),
+)
+''',
     ),
   ];
 

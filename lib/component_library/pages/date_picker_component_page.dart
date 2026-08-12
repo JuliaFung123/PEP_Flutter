@@ -18,7 +18,8 @@ class DatePickerComponentPage extends StatefulWidget {
     m3SpecUrl: 'https://m3.material.io/components/date-pickers/specs',
     description:
         'Date input with a docked calendar opened from the trailing calendar icon. '
-        'Type MM/DD/YYYY directly or pick from the month grid.',
+        'Single date or date range — type MM/DD/YYYY directly (single) or tap to '
+        'pick a range from the month grid.',
   );
 
   @override
@@ -27,49 +28,61 @@ class DatePickerComponentPage extends StatefulWidget {
 
 class _DatePickerComponentPageState extends State<DatePickerComponentPage> {
   DateTime _date = DateTime.now();
+  late DateTimeRange _dateRange;
+
+  @override
+  void initState() {
+    super.initState();
+    final today = DateTime.now();
+    _dateRange = DateTimeRange(
+      start: today,
+      end: today.add(const Duration(days: 7)),
+    );
+  }
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Input field',
-      m3Behavior: 'Compact field for the selected date with a picker affordance.',
-      ourImplementation:
-          'KpiTextField — type MM/DD/YYYY; trailing calendar icon opens docked sheet.',
-      action: 'Use as-is',
+      topic: 'datePickerTheme',
+      spec:
+          'RoundedRectangleBorder radius 20. Single date and date range share '
+          'the same theme.',
+      setupCode: '''
+datePickerTheme: DatePickerThemeData(
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20),
+  ),
+),
+''',
     ),
     ComponentNote(
-      variant: 'Docked sheet',
-      m3Behavior: 'Calendar anchors to the bottom edge for focused date selection.',
-      ourImplementation: 'Modal bottom sheet with drag handle, Cancel, and Done.',
-      action: 'Use as-is',
+      topic: 'bottomSheetTheme',
+      spec:
+          'Docked calendar sheet: showDragHandle, top radius 20. Used by '
+          'showDockedDatePicker and showDockedDateRangePicker.',
+      setupCode: '''
+bottomSheetTheme: BottomSheetThemeData(
+  showDragHandle: true,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  ),
+),
+''',
     ),
     ComponentNote(
-      variant: 'Calendar grid',
-      m3Behavior: 'Month view with selectable day cells per M3 date picker specs.',
-      ourImplementation: 'CalendarDatePicker in a rounded container.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Date range',
-      m3Behavior: 'Optional start/end selection for ranges.',
-      ourImplementation: 'Single date only in this atom.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Dialog picker',
-      m3Behavior: 'Modal date picker dialog for compact layouts.',
-      ourImplementation:
-          'Use showDatePicker — inherits DatePickerThemeData from AppTheme.',
-      action: 'Use showDatePicker when needed',
+      topic: 'DateRangePickerInputField',
+      spec:
+          'Read-only PEP field; opens docked DateRangePickerDialog '
+          '(calendarOnly). Display MM/DD/YYYY – MM/DD/YYYY.',
+      setupCode: '''
+DateRangePickerInputField(
+  value: dateRange,
+  onChanged: (range) {},
+)
+''',
     ),
   ];
 
   static const _pending = <PendingVariant>[
-    PendingVariant(
-      name: 'Date range picker',
-      foundIn: 'M3 date pickers',
-      description: 'Select start and end dates — not in this atom.',
-      suggestedAction: 'Add when product needs ranges',
-    ),
     PendingVariant(
       name: 'Full-screen picker',
       foundIn: 'M3 date pickers',
@@ -82,6 +95,12 @@ class _DatePickerComponentPageState extends State<DatePickerComponentPage> {
     VariantMatrixRow(
       id: 'docked',
       label: 'Docked picker',
+      supportsLeadingIcon: false,
+      supportsTrailingIcon: false,
+    ),
+    VariantMatrixRow(
+      id: 'docked_range',
+      label: 'Date range picker',
       supportsLeadingIcon: false,
       supportsTrailingIcon: false,
     ),
@@ -110,10 +129,18 @@ class _DatePickerComponentPageState extends State<DatePickerComponentPage> {
     VariantMatrixRow row,
     VariantMatrixCell cell,
   ) {
-    return DatePickerInputField(
-      value: _date,
-      enabled: cell.isEnabled,
-      onChanged: (date) => setState(() => _date = date),
-    );
+    return switch (row.id) {
+      'docked' => DatePickerInputField(
+        value: _date,
+        enabled: cell.isEnabled,
+        onChanged: (date) => setState(() => _date = date),
+      ),
+      'docked_range' => DateRangePickerInputField(
+        value: _dateRange,
+        enabled: cell.isEnabled,
+        onChanged: (range) => setState(() => _dateRange = range),
+      ),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

@@ -19,8 +19,9 @@ class BuyQuantityComponentPage extends StatefulWidget {
         'https://www.figma.com/design/61SERD0hYvuj7BrwBRv210/PEP_APP-2?node-id=247-5852',
     description:
         'Bottom purchase layout: quantity stepper with backend `maxQuantity`, '
-        'optional red hint composed from backend remaining / waitlist / '
-        'max-per-person fields, price summary, and Buy Now.',
+        'optional availability hint (`ColorScheme.error`) from remaining / '
+        'waitlist / max-per-person, price summary (backend-fixed colors), '
+        'and Buy Now.',
     group: ComponentLibraryGroup.layoutBlock,
   );
 
@@ -32,50 +33,27 @@ class BuyQuantityComponentPage extends StatefulWidget {
 class _BuyQuantityComponentPageState extends State<BuyQuantityComponentPage> {
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Purchase limit (maxQuantity)',
-      m3Behavior: 'N/A — commerce rule from backend.',
-      ourImplementation:
-          '`maxQuantity` comes from the backend already resolved. Frontend '
-          'does not calculate it. When quantity reaches it, **+** is disabled. '
-          '`null` = no client-side cap.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Availability hint',
-      m3Behavior: 'Product status under the quantity label — not an M3 pattern.',
-      ourImplementation:
-          'Compose backend fields into one red bodyMedium line (omit unused):\n'
-          '• remaining → “N left”\n'
-          '• waitlistAvailable → “N waitlist available”\n'
-          '• maxPerPerson → “max N/ppl”\n'
-          'Examples: “5 left, max 2/ppl”; “1 left, 3 waitlist available”. '
-          'Empty = plentiful (no hint). Separate from `maxQuantity`.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Quantity stepper',
-      m3Behavior: 'N/A — product control.',
-      ourImplementation:
-          'Outlined circular − / + (xs32); quantity uses titleLarge (22). '
-          '`minQuantity` / `maxQuantity` gate the buttons.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Price summary',
-      m3Behavior: 'N/A — commerce totals.',
-      ourImplementation:
-          'Centered row of `TicketCardPrice` (cash / token / coupon) in '
-          'titleLarge with 24px icons, separated by `/` (titleSmall).',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Buy Now',
-      m3Behavior: 'Primary filled action (Figma Size M 56 / Title Large).',
-      ourImplementation:
-          'Full-width stadium `FilledButton` via '
-          '`KpiButtonStyles.labelStyle(..., KpiButtonSize.m56)`. '
-          'Stepper ± uses `iconStyle(xs32)`.',
-      action: 'Use as-is',
+      topic: 'BuyQuantity',
+      spec:
+          'surfaceContainer bar; label titleMedium (onSurfaceVariant); '
+          'hint bodyMedium (error); quantity titleLarge; prices titleLarge '
+          'icons 24; Buy Now FilledButton M 56; steppers iconStyle xs32.',
+      setupCode: '''
+BuyQuantity(
+  quantity: quantity,
+  minQuantity: 1,
+  maxQuantity: maxFromBackend, // null = no client cap
+  availability: BuyQuantityAvailability(
+    remaining: 5,
+    maxPerPerson: 2,
+  ),
+  prices: const [
+    TicketCardPrice.cash(amount: '120'),
+  ],
+  onQuantityChanged: (v) {},
+  onBuy: () {},
+)
+''',
     ),
   ];
 

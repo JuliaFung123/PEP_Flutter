@@ -20,22 +20,15 @@ class DividerComponentPage extends StatelessWidget {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Full-width',
-      m3Behavior: 'Divider spans the full container width.',
-      ourImplementation: 'Divider() default.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Inset',
-      m3Behavior: 'Divider inset from the leading edge.',
-      ourImplementation: 'Divider with indent.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Middle inset',
-      m3Behavior: 'Divider inset from both edges.',
-      ourImplementation: 'Divider with indent and endIndent.',
-      action: 'Use as-is',
+      topic: 'dividerTheme',
+      spec:
+          'AppTheme does not override — ColorScheme.outlineVariant. '
+          'Full-width, indent, or indent + endIndent.',
+      setupCode: '''
+Divider()
+Divider(indent: 16)
+Divider(indent: 16, endIndent: 16)
+''',
     ),
   ];
 

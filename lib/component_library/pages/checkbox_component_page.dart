@@ -28,16 +28,23 @@ class _CheckboxComponentPageState extends State<CheckboxComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Checkbox',
-      m3Behavior: 'Binary checked / unchecked selection.',
-      ourImplementation: 'Checkbox widget.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Indeterminate',
-      m3Behavior: 'Mixed state for parent of partially selected children.',
-      ourImplementation: 'Checkbox with tristate: true, value: null.',
-      action: 'Use as-is',
+      topic: 'checkboxTheme',
+      spec:
+          'AppTheme does not override — ColorScheme primary / onPrimary / '
+          'outline. Tristate: value null.',
+      setupCode: '''
+// Defaults from ColorScheme; optional override:
+checkboxTheme: CheckboxThemeData(
+  fillColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) {
+      return colorScheme.primary;
+    }
+    return null;
+  }),
+),
+Checkbox(value: true, onChanged: (_) {}),
+Checkbox(tristate: true, value: null, onChanged: (_) {}),
+''',
     ),
   ];
 

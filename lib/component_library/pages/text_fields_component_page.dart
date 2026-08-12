@@ -10,13 +10,13 @@ import '../models/variant_status.dart';
 
 import '../widgets/component_page_scaffold.dart';
 
-import '../widgets/kpi_text_field.dart';
+import '../widgets/pep_text_field.dart';
 
 import '../widgets/variant_matrix_table.dart';
 
 
 
-/// KPI text fields — uses [KpiInputDecorationTheme] from app theme extensions.
+/// PEP text fields — uses [PepInputDecorationTheme] from app theme extensions.
 
 class TextFieldsComponentPage extends StatefulWidget {
 
@@ -34,9 +34,9 @@ class TextFieldsComponentPage extends StatefulWidget {
 
     description:
 
-        'KPI outlined text fields with external label, surface fill, and full outline. '
+        'PEP outlined text fields with external label, surface fill, and full outline. '
 
-        'Decoration tokens live in KpiInputDecorationTheme on ThemeData.extensions.',
+        'Decoration tokens live in PepInputDecorationTheme on ThemeData.extensions.',
 
   );
 
@@ -58,9 +58,9 @@ class _TextFieldsComponentPageState extends State<TextFieldsComponentPage> {
 
   bool _showHelperText = true;
 
-  final _kpiOutlinedController = TextEditingController();
+  final _pepOutlinedController = TextEditingController();
 
-  final _kpiOutlinedPlainController = TextEditingController();
+  final _pepOutlinedPlainController = TextEditingController();
 
 
 
@@ -80,9 +80,9 @@ class _TextFieldsComponentPageState extends State<TextFieldsComponentPage> {
 
   void dispose() {
 
-    _kpiOutlinedController.dispose();
+    _pepOutlinedController.dispose();
 
-    _kpiOutlinedPlainController.dispose();
+    _pepOutlinedPlainController.dispose();
 
     super.dispose();
 
@@ -91,85 +91,25 @@ class _TextFieldsComponentPageState extends State<TextFieldsComponentPage> {
 
 
   static const _notes = <ComponentNote>[
-
     ComponentNote(
-
-      variant: 'KPI theme',
-
-      m3Behavior: 'Custom outlined field — not M3 filled or outlined.',
-
-      ourImplementation:
-
-          'KpiInputDecorationTheme on ThemeData.extensions — portable across projects.',
-
-      action: 'Use theme + KpiTextField',
-
+      topic: 'PepInputDecorationTheme',
+      spec:
+          'On ThemeData.extensions (PepThemeExtension). Filled '
+          'surfaceContainerLowest; outline 4dp radius; minHeight 56; '
+          'pad 16; focused primary 2dp.',
+      setupCode: '''
+// Via PepThemeExtension.from(colorScheme) in AppTheme
+PepTextField(
+  label: 'Label',
+  hintText: 'Hint',
+  helperText: 'Helper',
+)
+PepTextField(
+  showExternalLabel: false,
+  hintText: 'Hint only',
+)
+''',
     ),
-
-    ComponentNote(
-
-      variant: 'KPI outlined',
-
-      m3Behavior:
-
-          'Surface fill plus full outline; external label above the field.',
-
-      ourImplementation:
-
-          'KpiTextField — inherits decoration via applyDefaults(kpiInputDecorationTheme).',
-
-      action: 'Use as-is',
-
-    ),
-
-    ComponentNote(
-
-      variant: 'KPI outlined · no label',
-
-      m3Behavior:
-
-          'Outlined field without external label; hint and helper text only.',
-
-      ourImplementation:
-
-          'KpiTextField with showExternalLabel: false — helper text kept.',
-
-      action: 'Use as-is',
-
-    ),
-
-    ComponentNote(
-
-      variant: 'Helper text',
-
-      m3Behavior:
-
-          'Optional helper below the field on enabled/disabled states; toggled via API.',
-
-      ourImplementation:
-
-          'Helper text switch sets helperText — omitted on the error column (M3).',
-
-      action: 'Use as-is',
-
-    ),
-
-    ComponentNote(
-
-      variant: 'Error text',
-
-      m3Behavior:
-
-          'Replaces helper text in the subtext slot when the field is in error.',
-
-      ourImplementation:
-
-          'errorText on error column only — standard InputDecoration behavior.',
-
-      action: 'Use as-is',
-
-    ),
-
   ];
 
 
@@ -178,9 +118,9 @@ class _TextFieldsComponentPageState extends State<TextFieldsComponentPage> {
 
     VariantMatrixRow(
 
-      id: 'kpi_outlined',
+      id: 'pep_outlined',
 
-      label: 'KPI outlined',
+      label: 'PEP outlined',
 
       supportsLeadingIcon: true,
 
@@ -190,9 +130,9 @@ class _TextFieldsComponentPageState extends State<TextFieldsComponentPage> {
 
     VariantMatrixRow(
 
-      id: 'kpi_outlined_no_label',
+      id: 'pep_outlined_no_label',
 
-      label: 'KPI outlined · no label',
+      label: 'PEP outlined · no label',
 
       supportsLeadingIcon: true,
 
@@ -286,19 +226,19 @@ class _TextFieldsComponentPageState extends State<TextFieldsComponentPage> {
 
   ) {
 
-    final controller = row.id == 'kpi_outlined'
+    final controller = row.id == 'pep_outlined'
 
-        ? _kpiOutlinedController
+        ? _pepOutlinedController
 
-        : _kpiOutlinedPlainController;
+        : _pepOutlinedPlainController;
 
 
 
-    return KpiTextField(
+    return PepTextField(
 
       label: 'Label',
 
-      showExternalLabel: row.id == 'kpi_outlined',
+      showExternalLabel: row.id == 'pep_outlined',
 
       controller: controller,
 
@@ -306,7 +246,7 @@ class _TextFieldsComponentPageState extends State<TextFieldsComponentPage> {
 
       showHelperText: cell.showHelperText,
 
-      status: cell.isError ? KpiTextFieldStatus.error : KpiTextFieldStatus.normal,
+      status: cell.isError ? PepTextFieldStatus.error : PepTextFieldStatus.normal,
 
       prefixIcon:
 

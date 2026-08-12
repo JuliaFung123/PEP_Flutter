@@ -73,8 +73,8 @@ class ComponentPageScaffold extends StatelessWidget {
           ComponentSection(
             title: '1. Note',
             subtitle:
-                'Programmer reference — differences from M3. '
-                'Decide whether to use as-is, modify, or create a variant.',
+                'Theme / kit setup for this component. Expand a row for the '
+                'recommended ThemeData (or widget) code.',
             child: ComponentNoteTable(notes: notes),
           ),
           const SizedBox(height: 32),

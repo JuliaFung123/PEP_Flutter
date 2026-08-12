@@ -28,16 +28,17 @@ class _SlidersComponentPageState extends State<SlidersComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Slider',
-      m3Behavior: 'Select a single value along a track.',
-      ourImplementation: 'Slider widget.',
-      action: 'Use as-is',
-    ),
-    ComponentNote(
-      variant: 'Range slider',
-      m3Behavior: 'Select a start and end value on a track.',
-      ourImplementation: 'RangeSlider widget.',
-      action: 'Use as-is',
+      topic: 'sliderTheme',
+      spec:
+          'AppTheme does not override — ColorScheme primary / surfaceContainerHighest. '
+          'Slider and RangeSlider.',
+      setupCode: '''
+Slider(value: value, onChanged: (v) {})
+RangeSlider(
+  values: RangeValues(start, end),
+  onChanged: (v) {},
+)
+''',
     ),
   ];
 

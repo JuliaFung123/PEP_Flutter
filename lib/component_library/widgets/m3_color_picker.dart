@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'kpi_text_field.dart';
+import 'pep_text_field.dart';
 
 /// Material-style color picker: saturation/value plane, hue slider, hex field.
 /// No transparency / alpha control.
@@ -103,12 +103,12 @@ class _M3ColorPickerState extends State<M3ColorPicker> {
               onChanged: (hue) => _updateHsv(_hsv.withHue(hue)),
             ),
             SizedBox(height: gap),
-            KpiTextField(
+            PepTextField(
               showExternalLabel: false,
               showHelperText: false,
               hintText: '',
               controller: _hexController,
-              prefixIcon: KpiColorSwatchPrefix(color: color),
+              prefixIcon: PepColorSwatchPrefix(color: color),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'#[0-9A-Fa-f]')),
                 LengthLimitingTextInputFormatter(7),

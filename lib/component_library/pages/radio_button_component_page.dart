@@ -28,10 +28,17 @@ class _RadioButtonComponentPageState extends State<RadioButtonComponentPage> {
 
   static const _notes = <ComponentNote>[
     ComponentNote(
-      variant: 'Radio',
-      m3Behavior: 'Single selection within a radio group.',
-      ourImplementation: 'Radio widget with groupValue.',
-      action: 'Use as-is',
+      topic: 'radioTheme',
+      spec:
+          'AppTheme does not override — ColorScheme primary / onSurfaceVariant. '
+          'Single selection via groupValue.',
+      setupCode: '''
+Radio<int>(
+  value: 0,
+  groupValue: selected,
+  onChanged: (v) {},
+)
+''',
     ),
   ];
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'kpi_button_styles.dart';
+import 'pep_button_styles.dart';
 import 'ticket_card.dart';
 
 /// Availability / limit copy under the quantity label (all values from backend).
@@ -35,7 +35,7 @@ class BuyQuantityAvailability {
   /// Does not drive the stepper — use [BuyQuantity.maxQuantity] for that.
   final int? maxPerPerson;
 
-  /// Red hint copy, or `null` when nothing to show.
+  /// Red hint copy (`ColorScheme.error`), or `null` when nothing to show.
   String? get hintText {
     final parts = <String>[];
     if (remaining != null) parts.add('$remaining left');
@@ -70,10 +70,13 @@ class BuyQuantity extends StatelessWidget {
   final VoidCallback onBuy;
   final String label;
 
-  /// Optional red status under [label] (remaining / waitlist / max per person).
+  /// Status hint under [label] (remaining / waitlist / max per person).
   /// Use [BuyQuantityAvailability.plenty] when no hint is needed.
+  /// Hint text color uses [ColorScheme.error].
   final BuyQuantityAvailability availability;
 
+  /// Price summary lines. Amount colors are **backend-fixed** (not
+  /// [ColorScheme]); demos use placeholder hex until API colors are wired.
   final List<TicketCardPrice> prices;
   final String buyLabel;
   final int minQuantity;
@@ -95,8 +98,6 @@ class BuyQuantity extends StatelessWidget {
     if (maxQuantity != null && value > maxQuantity!) value = maxQuantity!;
     if (value != quantity) onQuantityChanged(value);
   }
-
-  static const _hintRed = Color(0xFFC10007);
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +131,7 @@ class BuyQuantity extends StatelessWidget {
                           Text(
                             hint,
                             style: textTheme.bodyMedium?.copyWith(
-                              color: _hintRed,
+                              color: colorScheme.error,
                             ),
                           ),
                       ],
@@ -162,7 +163,7 @@ class BuyQuantity extends StatelessWidget {
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: onBuy,
-                  style: KpiButtonStyles.labelStyle(context, KpiButtonSize.m56),
+                  style: PepButtonStyles.labelStyle(context, PepButtonSize.m56),
                   child: Text(buyLabel),
                 ),
               ),
@@ -237,7 +238,7 @@ class _RoundIconButton extends StatelessWidget {
       child: IconButton(
         onPressed: onPressed,
         padding: EdgeInsets.zero,
-        style: KpiButtonStyles.iconStyle(KpiButtonSize.xs32).copyWith(
+        style: PepButtonStyles.iconStyle(PepButtonSize.xs32).copyWith(
           foregroundColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.disabled)) {
               return colorScheme.onSurface.withValues(alpha: 0.38);
@@ -253,7 +254,7 @@ class _RoundIconButton extends StatelessWidget {
             return BorderSide(color: colorScheme.outline);
           }),
         ),
-        icon: Icon(icon, size: KpiButtonSize.xs32.iconSize),
+        icon: Icon(icon, size: PepButtonSize.xs32.iconSize),
       ),
     );
   }
@@ -300,6 +301,11 @@ class _PriceChip extends StatelessWidget {
 
   final TicketCardPrice price;
 
+  /// Demo placeholders until backend supplies per-type colors.
+  /// Cash currently maps to [ColorScheme.primary]; token/coupon stay fixed.
+  static const _tokenDemoColor = Color(0xFFC10007);
+  static const _couponDemoColor = Color(0xFF605B7E);
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -309,6 +315,7 @@ class _PriceChip extends StatelessWidget {
       TicketCardPriceType.cash => Text(
         '${price.currencyLabel} ${price.amount}',
         style: textTheme.titleLarge?.copyWith(
+          // Backend may override; demo uses primary.
           color: colorScheme.primary,
         ),
       ),
@@ -324,7 +331,7 @@ class _PriceChip extends StatelessWidget {
           Text(
             price.amount,
             style: textTheme.titleLarge?.copyWith(
-              color: const Color(0xFFC10007),
+              color: _tokenDemoColor,
             ),
           ),
         ],
@@ -337,7 +344,7 @@ class _PriceChip extends StatelessWidget {
           Text(
             price.amount,
             style: textTheme.titleLarge?.copyWith(
-              color: const Color(0xFF605B7E),
+              color: _couponDemoColor,
             ),
           ),
         ],

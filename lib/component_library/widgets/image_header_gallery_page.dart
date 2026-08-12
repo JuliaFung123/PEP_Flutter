@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'image_source.dart';
-import 'kpi_button_styles.dart';
+import 'pep_button_styles.dart';
 
 /// Full-screen image gallery opened from [ImageHeaderWidget] or [PhotoGallery].
 ///
@@ -85,7 +85,7 @@ class _ImageHeaderGalleryPageState extends State<ImageHeaderGalleryPage> {
                       child: IconButton(
                         onPressed: () => Navigator.of(context).maybePop(),
                         tooltip: 'Close',
-                        style: KpiButtonStyles.iconStyle(KpiButtonSize.s40)
+                        style: PepButtonStyles.iconStyle(PepButtonSize.s40)
                             .copyWith(
                           foregroundColor: const WidgetStatePropertyAll(
                             Colors.white,
